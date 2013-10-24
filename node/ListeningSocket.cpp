@@ -100,44 +100,29 @@ bool ListeningSocket::isPacketWaiting(){
 }
 
 
-/**
- * Waits for a UDP packet and returns it
- *
- * @param none 
- * @return the packet received
- */
+/*
 UDP_Packet ListeningSocket::receive_UDP_Packet(double timeoutInMilliSeconds){
     char packetHeader[MAX_PACKET_SIZE];
     receive_c_string(packetHeader, static_cast<int>(timeoutInMilliSeconds * 1000)); //timeout is in milliseconds
     return UDP_Packet(packetHeader);
 }
 
-
-/**
- * Waits for a IP Packet and returns it
- *
- * @param none 
- * @return the packet received
- */
 IP_Packet ListeningSocket::receive_IP_Packet(double timeoutInMilliSeconds){
     char packetHeader[MAX_PACKET_SIZE] = {'\0'};
     receive_c_string(packetHeader, static_cast<int>(timeoutInMilliSeconds * 1000)); //timeout is in milliseconds
     return IP_Packet(packetHeader);
 }
 
-
-
-
 ICMP_Packet* ListeningSocket::receive_ICMP_Packet(double timeoutInMilliSeconds){
     char packetHeader[MAX_PACKET_SIZE] = {'\0'};
     receive_c_string(packetHeader, static_cast<int>(timeoutInMilliSeconds * 1000));
     return ICMP_Packet_Factory::create_ICMP_Packet(packetHeader);
 }
+*/
 
 
 
-
-/** d
+/** 
     Receive a C-string from the socket (don't abstract it into a packet yet)
     It is the job of other functions to figure out what this c-string is
 */

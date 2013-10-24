@@ -21,22 +21,12 @@
 
 using namespace std;
 
-/**
- * Constructor for sending socket
- *
- * @param destinationIPAddress: ip address to send to
- * @param destinationPortNumber: port number to send packets to
- */
+
 SendingSocket::SendingSocket(int destinationIPAddress, int destinationPortNumber){
     setupSocketConnection(destinationIPAddress, destinationPortNumber);
 }
 
-/**
- * Second constructor
- *
- * @param hostName: name of computer to send to
- * @param destinationPortNumber: port number to send to
- */
+
 SendingSocket::SendingSocket(std::string hostName, int destinationPortNumber){
     int destinationIPAddress = getIPAddressForHostname(hostName);
     setupSocketConnection(destinationIPAddress, destinationPortNumber);
@@ -47,13 +37,6 @@ SendingSocket::~SendingSocket(){
     delete dest_sockaddr;
 }
 
-/**
- * Creates the socket to send on.
- *
- * @param destinationIPAddress: ip address to send to
- * @param destinationPortNumber: port to send to
- * @return void
- */
 void SendingSocket::setupSocketConnection(int destinationIPAddress, int destinationPortNumber){
     // THIS PREVENTS SOME ERRORS
     signal(SIGPIPE, SIG_IGN);
@@ -72,12 +55,6 @@ void SendingSocket::setupSocketConnection(int destinationIPAddress, int destinat
     dest_sockaddr->sin_addr.s_addr = destinationIPAddress;
 }
 
-/**
- * Sends the packet to the other host.
- *
- * @param p: packet to be sent
- * @return void
- */
 void SendingSocket::sendPacket(const Packet & p){  
     if (sendto(sock, p.c_str(), p.c_str_length(), 0, (sockaddr *) dest_sockaddr, (socklen_t) dest_sockaddr_size) == -1){
         throw Error("sendto error in SendingSocket::sendPacket");
