@@ -2,7 +2,7 @@
 #include <arpa/inet.h>
 
 #include "HostAndPort.h"
-#include "utility.h"
+#include "Utility.h"
 
 using namespace std;
 

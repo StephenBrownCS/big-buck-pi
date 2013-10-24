@@ -16,7 +16,7 @@
 
 #include <iostream>
 
-#include "utility.h"
+#include "Utility.h"
 
 // Defines a point of contact in a network
 // A host and port, used for communicating with RoutingTable

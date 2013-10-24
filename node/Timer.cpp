@@ -1,5 +1,5 @@
 
-#include "utility.h"
+#include "Utility.h"
 #include "Timer.h"
 
 Timer::Timer(){
