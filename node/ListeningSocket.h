@@ -8,13 +8,10 @@
 
 */
 
-#ifndef LISTENING_SOCKET_
-#define LISTENING_SOCKET_
+#ifndef LISTENING_SOCKET_H_
+#define LISTENING_SOCKET_H_
 
 // Forward References
-class UDP_Packet;
-class IP_Packet;
-class ICMP_Packet;
 
 // When thrown, signifies a TimeoutException
 struct SocketTimeoutException{};

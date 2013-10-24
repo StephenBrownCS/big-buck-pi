@@ -15,8 +15,8 @@
 #include <netdb.h>
 #include <signal.h>
 
-#include "sending_socket.h"
-#include "packet.h"
+#include "SendingSocket.h"
+#include "Packet.h"
 #include "utility.h"
 
 using namespace std;

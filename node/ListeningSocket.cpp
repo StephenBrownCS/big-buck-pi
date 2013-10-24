@@ -15,12 +15,9 @@
 #include <arpa/inet.h>
 #include <signal.h>
 
-#include "listening_socket.h"
-#include "UDP_packet.h"
-#include "IP_packet.h"
-#include "ICMP_Packet.h"
+#include "ListeningSocket.h"
+#include "Packet.h"
 #include "utility.h"
-#include "ICMP_Packet_Factory.h"
 
 const int MAX_PACKET_SIZE = 1024 + 9;
 using namespace std;
