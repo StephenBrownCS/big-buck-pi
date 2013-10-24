@@ -12,6 +12,7 @@
 #define LISTENING_SOCKET_H_
 
 // Forward References
+class Packet;
 
 // When thrown, signifies a TimeoutException
 struct SocketTimeoutException{};
@@ -27,7 +28,7 @@ class ListeningSocket{
         //Receive a single Packet
         //timeoutInMilliSeconds specifies how long the socket should listen for before giving up
         //if timeoutInMilliSeconds is 0, it will block until it receives
-        //UDP_Packet receive_UDP_Packet(double timeoutInMilliSeconds = 0);
+        Packet* receivePacket(double timeoutInMilliSeconds = 0);
         //IP_Packet receive_IP_Packet(double timeoutInMilliSeconds = 0);
         //ICMP_Packet* receive_ICMP_Packet(double timeoutInMilliSeconds = 0);
         

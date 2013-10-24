@@ -17,18 +17,18 @@
 
 #include "SendingSocket.h"
 #include "Packet.h"
-#include "utility.h"
+#include "Utility.h"
 
 using namespace std;
 
 
-SendingSocket::SendingSocket(int destinationIPAddress, int destinationPortNumber){
+SendingSocket::SendingSocket(long destinationIPAddress, int destinationPortNumber){
     setupSocketConnection(destinationIPAddress, destinationPortNumber);
 }
 
 
 SendingSocket::SendingSocket(std::string hostName, int destinationPortNumber){
-    int destinationIPAddress = getIPAddressForHostname(hostName);
+    long destinationIPAddress = getIPAddressForHostname(hostName);
     setupSocketConnection(destinationIPAddress, destinationPortNumber);
 }
 
@@ -37,7 +37,7 @@ SendingSocket::~SendingSocket(){
     delete dest_sockaddr;
 }
 
-void SendingSocket::setupSocketConnection(int destinationIPAddress, int destinationPortNumber){
+void SendingSocket::setupSocketConnection(long destinationIPAddress, int destinationPortNumber){
     // THIS PREVENTS SOME ERRORS
     signal(SIGPIPE, SIG_IGN);
     
@@ -55,8 +55,8 @@ void SendingSocket::setupSocketConnection(int destinationIPAddress, int destinat
     dest_sockaddr->sin_addr.s_addr = destinationIPAddress;
 }
 
-void SendingSocket::sendPacket(const Packet & p){  
-    if (sendto(sock, p.c_str(), p.c_str_length(), 0, (sockaddr *) dest_sockaddr, (socklen_t) dest_sockaddr_size) == -1){
+void SendingSocket::sendPacket(const Packet * p){  
+    if (sendto(sock, p->c_str(), p->c_str_length(), 0, (sockaddr *) dest_sockaddr, (socklen_t) dest_sockaddr_size) == -1){
         throw Error("sendto error in SendingSocket::sendPacket");
     }
 }

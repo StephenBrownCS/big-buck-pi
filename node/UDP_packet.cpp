@@ -15,7 +15,7 @@
 #include <arpa/inet.h>
 
 #include "UDP_packet.h"
-#include "utility.h"
+#include "Utility.h"
 
 const int MAX_FILENAME_SIZE = 1024;
 using namespace std;

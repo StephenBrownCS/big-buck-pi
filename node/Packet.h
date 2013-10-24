@@ -32,6 +32,8 @@ public:
     //Virtual Dtor
     virtual ~Packet() {}
     
+    static Packet* create( const char* str );
+    
     //Produces a c string in network order for send()
     virtual const char * c_str() const = 0;
     

@@ -23,7 +23,7 @@ public:
     //CONSTRUCTORS
     //Creates a sending socket for a specified destination IP and port
     // destinationIPAddress must be in network-byte order
-    SendingSocket(int destinationIPAddress, int destinationPortNumber);
+    SendingSocket(long destinationIPAddress, int destinationPortNumber);
     
     //Creates a sending socket for a specified host and port
     SendingSocket(std::string hostName, int destinationPortNumber);
@@ -31,11 +31,11 @@ public:
     ~SendingSocket();
 
     // Sends a single packet
-    void sendPacket(const Packet & p);
+    void sendPacket(const Packet * p);
     
 private:
     // Initialization function used by constructors
-    void setupSocketConnection(int destinationIPAddress, int destinationPortNumber);
+    void setupSocketConnection(long destinationIPAddress, int destinationPortNumber);
     
     //No Copy or Assignment
     SendingSocket(const SendingSocket &);

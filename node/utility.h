@@ -50,8 +50,8 @@ std::string getOwnHostName();
 // in network-byte order. To convert, use ntohl()
 int getOwnIPAddress();
 
-// Returns ip address of host in network-byte order.
-// To convert, use ntohl()
+// Returns ip address of host in host-byte order.
+// To convert, use htonl()
 long getIPAddressForHostname(std::string hostName);
 
 //Returns the hostname of the ip Address

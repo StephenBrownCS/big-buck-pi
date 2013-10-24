@@ -36,7 +36,7 @@ int senseThings( SendingSocket & sendSock )
         else if ( currentState == 0 && previousState == 1){
             cout<<"None!"<<endl;
         }
-	previousState = currentState;
+	    previousState = currentState;
         sleep_for(milliseconds(100));
     }
 }

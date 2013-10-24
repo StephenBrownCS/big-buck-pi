@@ -20,7 +20,7 @@
 #include <netdb.h>
 #include <sys/timeb.h>
 
-#include "utility.h"
+#include "Utility.h"
 
 using namespace std;
 
@@ -54,7 +54,7 @@ unsigned long ipAddressStrToLong(std::string ipAddress){
     string last = ipAddress.substr(previousPeriodLocation + 1, 4);
     result += atoi(last.c_str());
 
-    return result;
+    return ntohl(result);
 }
 
 
@@ -107,7 +107,7 @@ long getIPAddressForHostname(string hostName){
     //return addr.s_addr;
     int result = 0;
     result = *(int *)hp->h_addr_list[0];
-    return result;
+    return ntohl(result);
 }
 
 
