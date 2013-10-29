@@ -17,8 +17,9 @@
 
 #include "ListeningSocket.h"
 #include "Packet.h"
+#include "UDPPacket.h"
 #include "Utility.h"
-#include "PacketFactory.h"
+#include "UDPPacket.h"
 
 const int MAX_PACKET_SIZE = 1024 + 9;
 using namespace std;
@@ -99,10 +100,10 @@ bool ListeningSocket::isPacketWaiting(){
 
 
 
-Packet* ListeningSocket::receivePacket(double timeoutInMilliSeconds){
+UDPPacket* ListeningSocket::receivePacket(double timeoutInMilliSeconds){
     char packetHeader[MAX_PACKET_SIZE];
     receive_c_string(packetHeader, static_cast<int>(timeoutInMilliSeconds * 1000)); //timeout is in milliseconds
-    return PacketFactory::createPacket(packetHeader);
+    return UDPPacket::create(packetHeader);
 }
 
 

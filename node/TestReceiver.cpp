@@ -1,7 +1,8 @@
 #include <iostream>
 #include "ListeningSocket.h"
 #include "Packet.h"
-#include "HelloPacket.h"
+#include "UDPPacket.h"
+#include "BigBuckPacket.h"
 #include "Utility.h"
 #include "HostAndPort.h"
 //#include <chrono>
@@ -12,18 +13,22 @@
 
 using namespace std;
 
+const int PORT = 55019;
+
 int main(){
     try{
-        const int PORT = 55003;
         ListeningSocket listenSock( PORT );
         
-        unsigned int ownIPAddress = getOwnIPAddress();
+        unsigned int ownIPAddress = ntohl(getOwnIPAddress());
         cout << "Own IP Address: " << convertIntToIPAddressString(ownIPAddress) << endl;
         
         while( true ){
             if (listenSock.isPacketWaiting() ){
-                Packet* pkt = listenSock.receivePacket();
-                cout<<"Received!"<<endl;
+                UDPPacket* pkt = listenSock.receivePacket();
+                cout << "Received!" << endl;
+                pkt->print();
+                Packet* bigBuckPkt = BigBuckPacket::create(pkt->getPayload());
+                bigBuckPkt->print();
             }
             sleep(1);
         }

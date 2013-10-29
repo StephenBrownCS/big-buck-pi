@@ -1,13 +1,13 @@
 # Define variables
 CFLAGS = -g
 
-SENDER_OBJECTS = Packet.o HelloPacket.o SendingSocket.o ListeningSocket.o \
-                   Utility.o PacketFactory.o \
+SENDER_OBJECTS = Packet.o UDPPacket.o BigBuckPacket.o SendingSocket.o ListeningSocket.o \
+                   Utility.o\
                    LinkStatePacket.o \
                    HostAndPort.o Timer.o \
                    TestSender.o
-RECEIVER_OBJECTS = Packet.o HelloPacket.o SendingSocket.o ListeningSocket.o \
-                   Utility.o PacketFactory.o \
+RECEIVER_OBJECTS = Packet.o UDPPacket.o BigBuckPacket.o SendingSocket.o ListeningSocket.o \
+                   Utility.o \
                    LinkStatePacket.o \
                    HostAndPort.o Timer.o \
                    TestReceiver.o
@@ -18,24 +18,30 @@ RECEIVER_OBJECTS = Packet.o HelloPacket.o SendingSocket.o ListeningSocket.o \
 #	g++ $(CFLAGS) sender.cpp Packet.cpp UDP_Packet.cpp SendingSocket.cpp ListeningSocket.cpp Utility.cpp -o sender
 
 all: $(SENDER_OBJECTS) $(RECEIVER_OBJECTS) 
-	g++ $(SENDER_OBJECTS) -o sender
-	g++ $(RECEIVER_OBJECTS) -o receiver
+	g++ $(CFLAGS) $(SENDER_OBJECTS) -o sender
+	g++ $(CFLAGS) $(RECEIVER_OBJECTS) -o receiver
 
 TestSender.o: TestSender.cpp SendingSocket.h ListeningSocket.h Utility.h \
-		Packet.h LinkStatePacket.h \
-		HostAndPort.h HelloPacket.h \
+		Packet.h BigBuckPacket.h UDPPacket.h \
+		HostAndPort.h \
 		Timer.h
 	g++ $(CFLAGS) TestSender.cpp -c
 
-TestReceiver.o: TestReceiver.cpp SendingSocket.h ListeningSocket.h Utility.h \
-		Packet.h LinkStatePacket.h \
-		HostAndPort.h HelloPacket.h \
+TestReceiver.o: TestReceiver.cpp SendingSocket.h Utility.h \
+		Packet.h BigBuckPacket.h UDPPacket.h \
+		HostAndPort.h \
 		Timer.h
 	g++ $(CFLAGS) TestReceiver.cpp -c
 	
 Packet.o: Packet.h Packet.cpp
 	g++ $(CFLAGS) Packet.cpp -c
 	
+UDPPacket.o: UDPPacket.h UDPPacket.cpp HostAndPort.h
+	g++ $(CFLAGS) UDPPacket.cpp -c
+	
+BigBuckPacket.o: BigBuckPacket.h BigBuckPacket.cpp BigBuckPacket.h
+	g++ $(CFLAGS) BigBuckPacket.cpp -c
+
 LinkStatePacket.o: Packet.h LinkStatePacket.cpp LinkStatePacket.h HostAndPort.h
 	g++ $(CFLAGS) LinkStatePacket.cpp -c
 	
@@ -51,8 +57,7 @@ Utility.o: Utility.h Utility.cpp
 SendingSocket.o: SendingSocket.h SendingSocket.cpp Packet.h
 	g++ $(CFLAGS) SendingSocket.cpp -c
 	
-ListeningSocket.o: ListeningSocket.h ListeningSocket.cpp Packet.h \
-		PacketFactory.h
+ListeningSocket.o: ListeningSocket.h ListeningSocket.cpp Packet.h
 	g++ $(CFLAGS) ListeningSocket.cpp -c
 	
 PacketFactory.o: PacketFactory.h PacketFactory.cpp \
@@ -65,11 +70,14 @@ Timer.o: Timer.h Timer.cpp Utility.h
 	
 	
 debug:
-	g++ $(CFLAGS) TestSender.cpp TestReceiver.cpp Packet.cpp SendingSocket.cpp ListeningSocket.cpp \
-                    Utility.cpp PacketFactory.cpp \
-                    LinkStatePacket.cpp ICMP_Packet.cpp \
-                    HostAndPort.cpp HelloPacket.cpp Timer.cpp \
-                    -o emulator	
+	g++ $(CFLAGS) TestReceiver.cpp Packet.cpp SendingSocket.cpp ListeningSocket.cpp \
+                    UDPPacket.cpp BigBuckPacket.cpp \
+                    HostAndPort.cpp Utility.cpp \
+                    -o receiver	
+	g++ $(CFLAGS) TestSender.cpp Packet.cpp SendingSocket.cpp ListeningSocket.cpp \
+                    UDPPacket.cpp BigBuckPacket.cpp \
+                    HostAndPort.cpp Utility.cpp \
+                    -o sender	
 
 clean:
 	rm sender receiver *.o

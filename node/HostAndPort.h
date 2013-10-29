@@ -39,6 +39,7 @@ public:
     
     // Getter for IP as an unsigned int in network-byte order
     unsigned int getIP() const;
+    unsigned int setIP(int ip){ ipAddr = convertIntToIPAddressString(ip); }
     
     // Getters and Setters for short port
     unsigned short getPort() const { return port; }
