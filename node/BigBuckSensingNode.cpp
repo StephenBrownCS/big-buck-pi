@@ -1,3 +1,6 @@
+#include <iostream>
+#include <cstring>
+#include <sstream>
 #include <chrono>
 #include <thread>
 #include "BigBuckSensingNode.h"
@@ -34,8 +37,9 @@ void BigBuckSensingNode::sensingLoop(){
     int currentState = 0;
     int previousState = 0;
     while( true ){
-        currentState = sensor->getCurrentState();
+        currentState = sensor->getCurrentState() * 100;
         if ( currentState != previousState ){
+            cout << "New State: " << currentState << endl;
             sendSensorState( currentState );
         }
         previousState = currentState;
@@ -44,7 +48,10 @@ void BigBuckSensingNode::sensingLoop(){
 }
 
 void BigBuckSensingNode::sendSensorState( int currentState ){
-    BigBuckPacket* pkt = BigBuckPacket::create( 'S', id, BASE_STATION_ID, nextSequence++, 0, 0 );
+    ostringstream convert;
+    convert << currentState;
+    const char* currentStateStr = convert.str().c_str();
+    BigBuckPacket* pkt = BigBuckPacket::create( 'S', id, BASE_STATION_ID, nextSequence++, strlen(currentStateStr), currentStateStr );
     communicator->sendPacket( pkt );
     delete pkt;
 }
