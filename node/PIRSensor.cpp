@@ -5,6 +5,8 @@
 
 using namespace std;
 
+const int PIR_INPUT = 7;
+
 PIRSensor* PIRSensor::create(){
     return new PIRSensor();
 }

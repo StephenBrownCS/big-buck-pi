@@ -1,5 +1,6 @@
 # Define variables
-CFLAGS = -g
+CFLAGS = -g -std=c++0x
+LDFLAGS = -I../lib/gnublin-api
 
 SENDER_OBJECTS = Packet.o UDPPacket.o BigBuckPacket.o SendingSocket.o ListeningSocket.o \
                    Utility.o\
@@ -27,7 +28,7 @@ BIG_BUCK_NODE_OBJECTS = Packet.o UDPPacket.o BigBuckPacket.o SendingSocket.o Lis
 all: $(SENDER_OBJECTS) $(RECEIVER_OBJECTS) $(BIG_BUCK_NODE_OBJECTS)
 	g++ $(CFLAGS) $(SENDER_OBJECTS) -o sender
 	g++ $(CFLAGS) $(RECEIVER_OBJECTS) -o receiver
-	g++ $(CFLAGS) $(BIG_BUCK_NODE_OBJECTS) -o node
+	g++ $(CFLAGS) $(BIG_BUCK_NODE_OBJECTS) gnublin.a -o node
 
 TestSender.o: TestSender.cpp SendingSocket.h ListeningSocket.h Utility.h \
 		Packet.h BigBuckPacket.h UDPPacket.h \
@@ -52,7 +53,7 @@ WifiCommunicator.o: WifiCommunicator.cpp WifiCommunicator.h Communicator.h \
 	g++ $(CFLAGS) WifiCommunicator.cpp -c
 
 PIRSensor.o: PIRSensor.cpp PIRSensor.h Sensor.h
-	g++ $(CFLAGS) PIRSensor.cpp -c
+	g++ $(CFLAGS) gnublin.a PIRSensor.cpp -c $(LDFLAGS)
 	
 Packet.o: Packet.h Packet.cpp
 	g++ $(CFLAGS) Packet.cpp -c

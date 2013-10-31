@@ -1,4 +1,5 @@
 #include <iostream>
+#include <arpa/inet.h>
 #include "ListeningSocket.h"
 #include "Packet.h"
 #include "UDPPacket.h"
