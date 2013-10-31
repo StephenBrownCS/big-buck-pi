@@ -108,5 +108,11 @@ debug:
                     Main.cpp PIRSensor.cpp \
                     -o sender	
 
+server:
+	g++ -g TestReceiver.cpp Packet.cpp SendingSocket.cpp ListeningSocket.cpp \
+                    UDPPacket.cpp BigBuckPacket.cpp \
+                    HostAndPort.cpp Utility.cpp \
+                    -o receiver	
+
 clean:
 	rm sender receiver *.o
