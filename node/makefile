@@ -11,27 +11,48 @@ RECEIVER_OBJECTS = Packet.o UDPPacket.o BigBuckPacket.o SendingSocket.o Listenin
                    LinkStatePacket.o \
                    HostAndPort.o Timer.o \
                    TestReceiver.o
+                   
+BIG_BUCK_NODE_OBJECTS = Packet.o UDPPacket.o BigBuckPacket.o SendingSocket.o ListeningSocket.o \
+                   Utility.o \
+                   LinkStatePacket.o \
+                   HostAndPort.o Timer.o \
+                   PIRSensor.o WifiCommunicator.o BigBuckSensingNode.o \
+                   Main.o
 
 
 #all: This the old make all
 #	g++ $(CFLAGS) requester.cpp tracker.cpp Packet.cpp UDP_Packet.cpp SendingSocket.cpp ListeningSocket.cpp Utility.cpp -o requester
 #	g++ $(CFLAGS) sender.cpp Packet.cpp UDP_Packet.cpp SendingSocket.cpp ListeningSocket.cpp Utility.cpp -o sender
 
-all: $(SENDER_OBJECTS) $(RECEIVER_OBJECTS) 
+all: $(SENDER_OBJECTS) $(RECEIVER_OBJECTS) $(BIG_BUCK_NODE_OBJECTS)
 	g++ $(CFLAGS) $(SENDER_OBJECTS) -o sender
 	g++ $(CFLAGS) $(RECEIVER_OBJECTS) -o receiver
+	g++ $(CFLAGS) $(BIG_BUCK_NODE_OBJECTS) -o node
 
 TestSender.o: TestSender.cpp SendingSocket.h ListeningSocket.h Utility.h \
 		Packet.h BigBuckPacket.h UDPPacket.h \
-		HostAndPort.h \
-		Timer.h
+		HostAndPort.h
 	g++ $(CFLAGS) TestSender.cpp -c
 
 TestReceiver.o: TestReceiver.cpp SendingSocket.h Utility.h \
 		Packet.h BigBuckPacket.h UDPPacket.h \
-		HostAndPort.h \
-		Timer.h
+		HostAndPort.h
 	g++ $(CFLAGS) TestReceiver.cpp -c
+	
+Main.o: Main.cpp Packet.h UDPPacket.h BigBuckPacket.h  \
+		Utility.h HostAndPort.h PIRSensor.h WifiCommunicator.h BigBuckSensingNode.h
+	g++ $(CFLAGS) Main.cpp -c
+
+BigBuckSensingNode.o: BigBuckSensingNode.cpp BigBuckSensingNode.h \
+		Sensor.h Communicator.h BigBuckPacket.o
+	g++ $(CFLAGS) BigBuckSensingNode.cpp -c
+	
+WifiCommunicator.o: WifiCommunicator.cpp WifiCommunicator.h Communicator.h \
+		ListeningSocket.h SendingSocket.h UDPPacket.h Utility.h HostAndPort.h
+	g++ $(CFLAGS) WifiCommunicator.cpp -c
+
+PIRSensor.o: PIRSensor.cpp PIRSensor.h Sensor.h
+	g++ $(CFLAGS) PIRSensor.cpp -c
 	
 Packet.o: Packet.h Packet.cpp
 	g++ $(CFLAGS) Packet.cpp -c
@@ -77,6 +98,13 @@ debug:
 	g++ $(CFLAGS) TestSender.cpp Packet.cpp SendingSocket.cpp ListeningSocket.cpp \
                     UDPPacket.cpp BigBuckPacket.cpp \
                     HostAndPort.cpp Utility.cpp \
+                    -o sender	
+                    
+	g++ $(CFLAGS) Packet.cpp SendingSocket.cpp ListeningSocket.cpp \
+                    UDPPacket.cpp BigBuckPacket.cpp \
+                    HostAndPort.cpp Utility.cpp \
+                    BigBuckSensingNode.cpp WifiCommunicator.cpp \
+                    Main.cpp PIRSensor.cpp \
                     -o sender	
 
 clean:
