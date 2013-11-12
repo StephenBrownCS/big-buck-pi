@@ -15,5 +15,5 @@
 *.dSYM
 sender
 receiver
-node
+big-buck-node
 a.out

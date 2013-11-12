@@ -1,3 +1,10 @@
+/*
+    1) Listens on port 8888
+    2) Expects to receive a UDP Packet with no payload (this will identify the 
+        sender)
+*/
+
+
 #include <iostream>
 #include "SendingSocket.h"
 #include "Packet.h"
@@ -11,11 +18,12 @@
 
 using namespace std;
 
-const int PORT = 5001;
+const int PORT = 8888;
 
 int main(int argc, char** argv){
     char* destIpAddress = 0;
     unsigned short destPort = 0;
+    /*
     if ( argc != 3 ){
         cout << "Usage: Main <Dot-Separated IP Address> <port>" << endl;
         exit( 0 );
@@ -24,6 +32,22 @@ int main(int argc, char** argv){
         destIpAddress = argv[1];
         destPort = atoi(argv[2]);
     }
+    */
+    
+    // Always listen on port 8888
+    ListeningSocket listenSock( INITIAL_PORT );
+    
+    // Get the first packet that will tell us where to send our packets to
+    UDPPacket* setupPkt = listenSock.receivePacket();
+    HostAndPort srcHap = setupPkt->getSrc();
+    destIpAddress = srcHap.getIPAsStr().c_str();
+    destPort = srcHap.getPort();
+    
+    cout << "Dest IP Address: " << destIPAddress << endl;
+    cout << "Dest Port: " << destPort << endl;
+    
+    delete setupPkt;
+    listenSock.close();
 
     try{    
         Communicator* communicator = WifiCommunicator::create( destIpAddress, destPort, PORT );

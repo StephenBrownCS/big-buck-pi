@@ -2,10 +2,9 @@
     LISTENING SOCKET
     
     This class is an abstraction of a UDP socket meant for receiving packets
-    Its constructor specifies a port to listen on
-    Packets can be received one by one with the receive_UDP_Packet() and receive_IP_Packet()
-    functions.
-
+    Its constructor specifies a port to listen on.
+    Packets can be received by receivePacket() - these are custom "UDP Packets"
+    which are our own custom emulation of a real UDP Packet.
 */
 
 #ifndef LISTENING_SOCKET_H_
@@ -23,7 +22,11 @@ class ListeningSocket{
         //Creates Listening Socket to listen at portNumber
         ListeningSocket(int portNumber);
         
+        // closes the socket
         ~ListeningSocket();
+        
+        // closes the socket
+        void close();
         
         //Receive a single Packet
         //timeoutInMilliSeconds specifies how long the socket should listen for before giving up
