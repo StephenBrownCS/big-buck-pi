@@ -1,0 +1,22 @@
+#! /bin/sh
+#
+# chkconfig: 3 99 1
+# description: start big buck pi
+
+case "$1" in
+  start)
+        /home/pi/big-buck-pi/node/big-buck-node &
+        ;;
+  restart|reload|force-reload)
+        echo "Error: argument '$1' not supported" >&2
+        exit 3
+        ;;
+  stop)
+        pkill node
+        ;;
+  *)
+        echo "Usage: $0 start|stop" >&2
+        exit 3
+        ;;
+esac
+
