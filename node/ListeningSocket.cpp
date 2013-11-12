@@ -72,10 +72,10 @@ ListeningSocket::ListeningSocket(int portNumber){
 
 
 ListeningSocket::~ListeningSocket(){
-    close();
+    closeSocket();
 }
 
-void ListeningSocket::close(){
+void ListeningSocket::closeSocket(){
     close(sock);
 }
 

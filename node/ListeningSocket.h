@@ -26,7 +26,7 @@ class ListeningSocket{
         ~ListeningSocket();
         
         // closes the socket
-        void close();
+        void closeSocket();
         
         //Receive a single Packet
         //timeoutInMilliSeconds specifies how long the socket should listen for before giving up

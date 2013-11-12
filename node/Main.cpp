@@ -15,13 +15,14 @@
 #include "PIRSensor.h"
 #include "WifiCommunicator.h"
 #include "BigBuckSensingNode.h"
+#include "ListeningSocket.h"
 
 using namespace std;
 
 const int PORT = 8888;
 
 int main(int argc, char** argv){
-    char* destIpAddress = 0;
+    const char* destIpAddress = 0;
     unsigned short destPort = 0;
     /*
     if ( argc != 3 ){
@@ -35,7 +36,7 @@ int main(int argc, char** argv){
     */
     
     // Always listen on port 8888
-    ListeningSocket listenSock( INITIAL_PORT );
+    ListeningSocket listenSock( PORT );
     
     // Get the first packet that will tell us where to send our packets to
     UDPPacket* setupPkt = listenSock.receivePacket();
@@ -43,11 +44,11 @@ int main(int argc, char** argv){
     destIpAddress = srcHap.getIPAsStr().c_str();
     destPort = srcHap.getPort();
     
-    cout << "Dest IP Address: " << destIPAddress << endl;
+    cout << "Dest IP Address: " << destIpAddress << endl;
     cout << "Dest Port: " << destPort << endl;
     
     delete setupPkt;
-    listenSock.close();
+    listenSock.closeSocket();
 
     try{    
         Communicator* communicator = WifiCommunicator::create( destIpAddress, destPort, PORT );
