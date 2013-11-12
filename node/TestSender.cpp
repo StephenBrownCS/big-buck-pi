@@ -10,8 +10,8 @@ using namespace std;
 
 int main(){
     try{    
-        unsigned int destIP = ipAddressStrToLong("25.14.87.94");
-        int destPort = 55019;//44444;//55003;
+        unsigned int destIP = ipAddressStrToLong("128.105.34.152");
+        int destPort = 8888;//44444;//55003;
         cout << "destIP: " << destIP << endl;
         cout << "destPort: " << destPort << endl;
         
@@ -31,7 +31,7 @@ int main(){
         UDPPacket* udpPkt = UDPPacket::create(
             srcHap, destHap, bigBuckPkt->c_str_length(), bigBuckPkt->c_str());
                 
-        for(int i = 0; i < 10; i++){
+        for(int i = 0; i < 1; i++){
             cout << "Sending packet" << endl;
             sendSock.sendPacket(udpPkt);
         }
