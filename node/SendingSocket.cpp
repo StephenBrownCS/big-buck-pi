@@ -10,10 +10,12 @@
 #include <iostream>
 #include <sys/types.h>
 #include <netinet/in.h>
+#include <arpa/inet.h>
 #include <sys/socket.h>
 #include <string.h>
 #include <netdb.h>
 #include <signal.h>
+#include <unistd.h>
 
 #include "SendingSocket.h"
 #include "Packet.h"

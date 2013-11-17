@@ -118,7 +118,13 @@ test-sender:
 	g++ -g TestSender.cpp Packet.cpp SendingSocket.cpp ListeningSocket.cpp \
                     UDPPacket.cpp BigBuckPacket.cpp \
                     HostAndPort.cpp Utility.cpp \
-                    -o sender	        
+                    -o sender	     
+                    
+name-server:
+	g++ -g NameServerMain.cpp Packet.cpp SendingSocket.cpp ListeningSocket.cpp \
+                    UDPPacket.cpp BigBuckPacket.cpp \
+                    HostAndPort.cpp Utility.cpp \
+                    -o name-server	     
 
 
 clean:

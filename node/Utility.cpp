@@ -19,6 +19,7 @@
 #include <stdio.h>
 #include <netdb.h>
 #include <sys/timeb.h>
+#include <unistd.h>
 
 #include "Utility.h"
 
