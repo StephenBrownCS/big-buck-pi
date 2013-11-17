@@ -55,9 +55,7 @@ int main(int argc, char** argv){
             if(listenSock.isPacketWaiting()){               
                 UDPPacket* incomingPkt = listenSock.receivePacket(0.1);
             
-                #ifdef EMULATOR_DBG
-                    cout << "Packet Received!" << endl;
-                #endif
+                cout << "Packet Received!" << endl;
                 
                 HostAndPort senderHap = incomingPkt->getSrc();
 

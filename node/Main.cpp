@@ -35,6 +35,18 @@ int main(int argc, char** argv){
     }
     */
     
+    // Register with the name server
+    unsigned long nameServerIp = ntohl(getIPAddressForHostname('cedar.cs.wisc.edu'));
+    unsigned short nameServerPort = 8888;
+    
+    cout << "Name Server IP: " << nameServerIp << endl;
+    
+    HostAndPort nameServerHap(nameServerIp, nameServerPort);
+    SendingSocket sock(nameServerIp, nameServerPort);
+    sock.sendPacket(UDPPacket::create(self, senderHap, 0, 0));    
+    
+    cout << "Sent the packet to name server!" << endl;
+    
     // Always listen on port 8888
     ListeningSocket listenSock( PORT );
     
