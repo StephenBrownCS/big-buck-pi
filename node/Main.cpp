@@ -45,7 +45,8 @@ int main(int argc, char** argv){
     
     HostAndPort nameServerHap(nameServerIp, nameServerPort);
     SendingSocket sock(nameServerIp, nameServerPort);
-    sock.sendPacket(UDPPacket::create(self, nameServerHap, 0, 0));    
+    BigBuckPacket* registrationPkt = BigBuckPacket::create('R', 0, 0, 5, "node");
+    sock.sendPacket(UDPPacket::create(self, nameServerHap, registrationPkt->c_str_length(), registrationPkt->c_str()));    
     
     cout << "Sent the packet to name server!" << endl;
     

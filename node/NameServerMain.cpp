@@ -54,8 +54,11 @@ int main(int argc, char** argv){
             // SEE IF PACKET IS AVAILABLE
             if(listenSock.isPacketWaiting()){               
                 UDPPacket* incomingPkt = listenSock.receivePacket(0.1);
-            
+                BigBuckPacket* innerPkt = BigBuckPacket::create(incomingPkt->getPayload());
                 cout << "Packet Received!" << endl;
+                if (innerPkt->getPacketType() == 'R'){
+                    cout << "Registration Request!" << endl;
+                }
                 
                 HostAndPort senderHap = incomingPkt->getSrc();
 
