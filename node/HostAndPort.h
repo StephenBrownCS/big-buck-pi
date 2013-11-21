@@ -41,7 +41,7 @@ public:
     unsigned int getIP() const;
     
     // Takes in IP in network-byte order
-    void setIP(long ip){ ipAddr = ntohl(convertIntToIPAddressString(ip)); }
+    void setIP(long ip){ ipAddr = convertIntToIPAddressString(ntohl(ip)); }
     
     // Getters and Setters for short port
     unsigned short getPort() const { return port; }
