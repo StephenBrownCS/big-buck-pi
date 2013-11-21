@@ -67,6 +67,8 @@ int main(int argc, char** argv){
                     unsigned short nodeId = nextNodeIdToAssign++;
                     sensorNodes[nodeId] = senderHap;
                     
+                    cout << "Assigned node id of " << nodeId << endl;
+                    
                     // Respond with node Id
                     SendingSocket sock(senderHap.getIP(), senderHap.getPort());
                     cout << "Sending response to " << senderHap << endl;
