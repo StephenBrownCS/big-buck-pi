@@ -15,6 +15,7 @@
 #define HostAndPort__H__
 
 #include <iostream>
+#include <arpa/inet.h>
 
 #include "Utility.h"
 
