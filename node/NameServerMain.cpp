@@ -6,6 +6,8 @@
 
 
 #include <iostream>
+#include <sstream>
+#include <map>
 #include "ListeningSocket.h"
 #include "SendingSocket.h"
 #include "Packet.h"
@@ -17,6 +19,15 @@
 using namespace std;
 
 const int PORT = 8888;
+
+const char PKT_LETTER_REGISTRATION = 'R';
+const char PKT_LETTER_ACK = 'A';
+const char PKT_LETTER_HEARTBEAT = 'H';
+const char PKT_LETTER_MASTER = 'M';
+
+const int DEFAULT_NODE_ID = 0;
+const int NO_SEQUENCE = 0;
+const int NO_PAYLOAD = 0;
 
 int main(int argc, char** argv){
     const char* destIpAddress = 0;
@@ -36,17 +47,9 @@ int main(int argc, char** argv){
     
     // Always listen on port 8888
     ListeningSocket listenSock( PORT );
-    
-    // UDPPacket* setupPkt = listenSock.receivePacket();
-    //HostAndPort srcHap = setupPkt->getSrc();
-    //destIpAddress = srcHap.getIPAsStr().c_str();
-    //destPort = srcHap.getPort();
-    
-    //cout << "Dest IP Address: " << destIpAddress << endl;
-    //cout << "Dest Port: " << destPort << endl;
-    
-    //delete setupPkt;
-    //listenSock.closeSocket();
+
+    map<unsigned short, HostAndPort> sensorNodes;
+    unsigned short nextNodeIdToAssign = 0;
 
     try{    
         //loop to receive and forward packets
@@ -55,15 +58,66 @@ int main(int argc, char** argv){
             if(listenSock.isPacketWaiting()){               
                 UDPPacket* incomingPkt = listenSock.receivePacket(0.1);
                 BigBuckPacket* innerPkt = BigBuckPacket::create(incomingPkt->getPayload());
+                unsigned short senderId = innerPkt->getSrcNodeId();
+                HostAndPort senderHap = incomingPkt->getSrc();
+                
                 cout << "Packet Received!" << endl;
-                if (innerPkt->getPacketType() == 'R'){
-                    cout << "Registration Request!" << endl;
+                
+                if (innerPkt->getPacketType() == PKT_LETTER_REGISTRATION){
+                    cout << "Registration!" << endl;
+                    
+                    // Assign it a node Id
+                    unsigned short nodeId = nextNodeIdToAssign++;
+                    sensorNodes[nodeId] = senderHap;
+                    
+                    // Respond with node Id
+                    SendingSocket sock(senderHap.getIP(), senderHap.getPort());
+
+                    // Send the response and clean up
+                    BigBuckPacket* responseInnerPkt = BigBuckPacket::create( 
+                        'A', DEFAULT_NODE_ID, nodeId, NO_SEQUENCE, 0, NO_PAYLOAD );
+                    Packet* responseOuterPkt = UDPPacket::create(
+                        self, senderHap, responseInnerPkt->c_str_length(), responseInnerPkt->c_str());
+                    sock.sendPacket(responseOuterPkt);
+                    delete responseInnerPkt;
+                    delete responseOuterPkt;
+                    
+                    
+                }
+                else if(innerPkt->getPacketType() == PKT_LETTER_HEARTBEAT){
+                    cout << "Heartbeat!" << endl;
+                    cout << "\tNode Id: " << senderId << endl;
+                    cout << "\tNode Hap: " << senderHap << endl;
+                    
+                    
+                    
+                }
+                else if(innerPkt->getPacketType() == PKT_LETTER_MASTER){
+                    cout << "Master Registration!" << endl;
+                    cout << "\tNode Id: " << senderId << endl;
+                    cout << "\tNode Hap: " << senderHap << endl;
+
+                    // Contact all of the nodes and inform them of the master's 
+                    // location
+                    typedef map<unsigned short, HostAndPort>::iterator HapIter;
+                    for( HapIter it = sensorNodes.begin(); it != sensorNodes.end(); ++it){
+                        unsigned short nodeId = it->first;
+                        HostAndPort hap = it->second;
+                        SendingSocket sock(hap.getIP(), hap.getPort());
+                        
+                        // Serialize hap into a string and send it
+                        ostringstream os;
+                        os << senderHap;
+                        string str = os.str();
+                        BigBuckPacket* responseInnerPkt = BigBuckPacket::create(
+                            PKT_LETTER_MASTER, DEFAULT_NODE_ID, nodeId, NO_SEQUENCE, str.length(), str.c_str());
+                        Packet* responseOuterPkt = UDPPacket::create(
+                            self, senderHap, responseInnerPkt->c_str_length(), responseInnerPkt->c_str());
+                        sock.sendPacket(responseOuterPkt); 
+                    }
                 }
                 
-                HostAndPort senderHap = incomingPkt->getSrc();
-
-                SendingSocket sock(senderHap.getIP(), senderHap.getPort());
-                sock.sendPacket(UDPPacket::create(self, senderHap, 0, 0));
+                
             }
         }
     }
