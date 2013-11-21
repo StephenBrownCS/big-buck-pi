@@ -6,15 +6,16 @@ SENDER_OBJECTS = Packet.o UDPPacket.o BigBuckPacket.o SendingSocket.o ListeningS
                    Utility.o\
                    LinkStatePacket.o \
                    HostAndPort.o Timer.o \
+                   PacketConstants.o \
                    TestSender.o
 RECEIVER_OBJECTS = Packet.o UDPPacket.o BigBuckPacket.o SendingSocket.o ListeningSocket.o \
                    Utility.o \
                    LinkStatePacket.o \
                    HostAndPort.o Timer.o \
-                   TestReceiver.o
-                   
+                   TestReceiver.o \
+                   PacketConstants.o
 BIG_BUCK_NODE_OBJECTS = Packet.o UDPPacket.o BigBuckPacket.o SendingSocket.o ListeningSocket.o \
-                   Utility.o \
+                   Utility.o PacketConstants.o \
                    LinkStatePacket.o \
                    HostAndPort.o Timer.o \
                    PIRSensor.o WifiCommunicator.o BigBuckSensingNode.o \
@@ -40,7 +41,7 @@ TestReceiver.o: TestReceiver.cpp SendingSocket.h Utility.h \
 		HostAndPort.h
 	g++ $(CFLAGS) TestReceiver.cpp -c
 	
-Main.o: Main.cpp Packet.h UDPPacket.h BigBuckPacket.h  \
+Main.o: Main.cpp Packet.h UDPPacket.h BigBuckPacket.h  PacketConstants.h\
 		Utility.h HostAndPort.h PIRSensor.h WifiCommunicator.h BigBuckSensingNode.h
 	g++ $(CFLAGS) Main.cpp -c
 
@@ -63,6 +64,9 @@ UDPPacket.o: UDPPacket.h UDPPacket.cpp HostAndPort.h
 	
 BigBuckPacket.o: BigBuckPacket.h BigBuckPacket.cpp BigBuckPacket.h
 	g++ $(CFLAGS) BigBuckPacket.cpp -c
+
+PacketConstants.o: PacketConstants.h PacketConstants.cpp
+	g++ $(CFLAGS) PacketConstants.cpp -c
 
 LinkStatePacket.o: Packet.h LinkStatePacket.cpp LinkStatePacket.h HostAndPort.h
 	g++ $(CFLAGS) LinkStatePacket.cpp -c
@@ -120,12 +124,12 @@ test-sender:
                     HostAndPort.cpp Utility.cpp \
                     -o sender	     
                     
-name-server:
+name-server: NameServerMain.cpp Packet.cpp SendingSocket.cpp ListeningSocket.cpp UDPPacket.cpp BigBuckPacket.cpp HostAndPort.cpp Utility.cpp PacketConstants.cpp Packet.h SendingSocket.h ListeningSocket.h UDPPacket.h BigBuckPacket.h HostAndPort.h Utility.h PacketConstants.h
 	g++ -g NameServerMain.cpp Packet.cpp SendingSocket.cpp ListeningSocket.cpp \
                     UDPPacket.cpp BigBuckPacket.cpp \
-                    HostAndPort.cpp Utility.cpp \
+                    HostAndPort.cpp Utility.cpp PacketConstants.cpp \
                     -o name-server	     
 
 
 clean:
-	rm sender receiver *.o
+	rm sender receiver name-server big-buck-node *.o
