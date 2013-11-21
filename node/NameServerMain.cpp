@@ -19,7 +19,6 @@
 
 using namespace std;
 
-const int PORT = 8888;
 
 int main(int argc, char** argv){
     const char* destIpAddress = 0;
@@ -35,11 +34,11 @@ int main(int argc, char** argv){
     }
     */
     
-    HostAndPort self(ntohl(getOwnIPAddress()), PORT);
+    HostAndPort self(ntohl(getOwnIPAddress()), NAME_SERVER_PORT);
     cout << "Own Hap: " << self << endl;
     
     // Always listen on port 8888
-    ListeningSocket listenSock( PORT );
+    ListeningSocket listenSock( NAME_SERVER_PORT );
 
     map<unsigned short, HostAndPort> sensorNodes;
     unsigned short nextNodeIdToAssign = 0;
