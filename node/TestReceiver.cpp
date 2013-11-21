@@ -11,7 +11,7 @@
 
 using namespace std;
 
-const int OWN_LISTEN_PORT = 8888;
+const int OWN_LISTEN_PORT = 9999;
 const char* NAME_SERVER_NAME = "cedar.cs.wisc.edu";
 
 //#include <chrono>
@@ -28,7 +28,7 @@ int main(){
     
         // Register with the name server
         unsigned long nameServerIp = ntohl(getIPAddressForHostname(NAME_SERVER_NAME));
-        unsigned short nameServerPort = OWN_LISTEN_PORT;
+        unsigned short nameServerPort = NAME_SERVER_PORT;
     
         cout << "Name Server IP: " << convertIntToIPAddressString(nameServerIp) << endl;
     

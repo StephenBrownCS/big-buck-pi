@@ -12,7 +12,7 @@
 
 using namespace std;
 
-const int OWN_LISTEN_PORT = 8888;
+const int OWN_LISTEN_PORT = 4444;
 const char* NAME_SERVER_NAME = "cedar.cs.wisc.edu";
 
 unsigned short registerWithNameServer(HostAndPort & self, HostAndPort & masterHap );
@@ -20,7 +20,7 @@ unsigned short registerWithNameServer(HostAndPort & self, HostAndPort & masterHa
 int main(){
     try{    
         // For testing name server
-        HostAndPort self(getOwnIPAddress(), 8888);
+        HostAndPort self(getOwnIPAddress(), OWN_LISTEN_PORT);
         HostAndPort masterHap;
         
         registerWithNameServer(self, masterHap);
@@ -34,7 +34,7 @@ int main(){
 unsigned short registerWithNameServer(HostAndPort & self, HostAndPort & masterHap){
     // Register with the name server
     unsigned long nameServerIp = ntohl(getIPAddressForHostname(NAME_SERVER_NAME));
-    unsigned short nameServerPort = 8888;
+    unsigned short nameServerPort = NAME_SERVER_PORT;
     
     cout << "Name Server IP: " << convertIntToIPAddressString(nameServerIp) << endl;
     
