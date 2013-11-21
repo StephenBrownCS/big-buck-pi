@@ -141,7 +141,6 @@ void BigBuckPacket::assemblePacketString(){
     *int_ptr = htonl(payloadLength);
     
     if (payload){
-        strcpy(packet_as_str + BIG_BUCK_PACKET_HEADER_SIZE, payload);
         for(int i = 0; i < payloadLength; i++){
             packet_as_str[BIG_BUCK_PACKET_HEADER_SIZE + i] = payload[i];
         }
