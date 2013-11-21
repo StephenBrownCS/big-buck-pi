@@ -78,8 +78,6 @@ unsigned short registerWithNameServer(HostAndPort & self, HostAndPort & masterHa
         delete outerPkt;
         delete innerPkt;
     }
-    
-    listenSock.closeSocket();
-    
+        
     return ownNodeId;   
 }

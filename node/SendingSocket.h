@@ -28,6 +28,7 @@ public:
     //Creates a sending socket for a specified host and port
     SendingSocket(std::string hostName, int destinationPortNumber);
 
+    // closes the socket
     ~SendingSocket();
 
     // Sends a single packet

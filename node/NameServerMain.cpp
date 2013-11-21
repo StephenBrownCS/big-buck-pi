@@ -19,6 +19,8 @@
 
 using namespace std;
 
+void sendMasterHapToNode( HostAndPort & self, HostAndPort & destHap, HostAndPort & masterHap, unsigned short nodeId);
+
 
 int main(int argc, char** argv){
     const char* destIpAddress = 0;
@@ -35,6 +37,9 @@ int main(int argc, char** argv){
     */
     
     HostAndPort self(ntohl(getOwnIPAddress()), NAME_SERVER_PORT);
+    HostAndPort masterHap;
+    bool masterIsKnown = false;
+    
     cout << "Own Hap: " << self << endl;
     
     // Always listen on port 8888
@@ -71,11 +76,14 @@ int main(int argc, char** argv){
                         'A', DEFAULT_NODE_ID, nodeId, NO_SEQUENCE, NO_PAYLOAD, EMPTY_PAYLOAD );
                     Packet* responseOuterPkt = UDPPacket::create(
                         self, senderHap, responseInnerPkt->c_str_length(), responseInnerPkt->c_str());
+                        
                     sock.sendPacket(responseOuterPkt);
                     delete responseInnerPkt;
                     delete responseOuterPkt;
                     
-                    
+                    if ( masterIsKnown ){
+                        sendMasterHapToNode( self, senderHap, masterHap, nodeId);
+                    } 
                 }
                 else if(innerPkt->getPacketType() == PKT_LETTER_HEARTBEAT){
                     cout << "Heartbeat!" << endl;
@@ -89,6 +97,9 @@ int main(int argc, char** argv){
                     cout << "Master Registration!" << endl;
                     cout << "\tNode Id: " << senderId << endl;
                     cout << "\tNode Hap: " << senderHap << endl;
+                    
+                    masterHap = senderHap;
+                    masterIsKnown = true;
 
                     // Contact all of the nodes and inform them of the master's 
                     // location
@@ -96,18 +107,15 @@ int main(int argc, char** argv){
                     for( HapIter it = sensorNodes.begin(); it != sensorNodes.end(); ++it){
                         unsigned short nodeId = it->first;
                         HostAndPort hap = it->second;
-                        SendingSocket sock(hap.getIP(), hap.getPort());
                         
-                        // Serialize hap into a string and send it
-                        ostringstream os;
-                        os << senderHap;
-                        string str = os.str();
-                        BigBuckPacket* responseInnerPkt = BigBuckPacket::create(
-                            PKT_LETTER_MASTER, DEFAULT_NODE_ID, nodeId, NO_SEQUENCE, str.length(), str.c_str());
-                        Packet* responseOuterPkt = UDPPacket::create(
-                            self, senderHap, responseInnerPkt->c_str_length(), responseInnerPkt->c_str());
-                        sock.sendPacket(responseOuterPkt); 
+                        sendMasterHapToNode( self, hap, senderHap, nodeId );
                     }
+                    
+                    // Send ACK to master
+                    BigBuckPacket* responseInnerPkt = BigBuckPacket::create( 
+                        'A', DEFAULT_NODE_ID, DEFAULT_NODE_ID, NO_SEQUENCE, NO_PAYLOAD, EMPTY_PAYLOAD );
+                    Packet* responseOuterPkt = UDPPacket::create(
+                        self, senderHap, responseInnerPkt->c_str_length(), responseInnerPkt->c_str());
                 }
             }
         }
@@ -118,3 +126,20 @@ int main(int argc, char** argv){
     listenSock.closeSocket();
     return 0;
 }
+
+void sendMasterHapToNode( HostAndPort & self, HostAndPort & destHap, HostAndPort & masterHap, unsigned short nodeId){
+    
+    SendingSocket sock(destHap.getIP(), destHap.getPort());
+    
+    // Serialize hap into a string and send it
+    ostringstream os;
+    os << masterHap;
+    string str = os.str();
+    
+    BigBuckPacket* responseInnerPkt = BigBuckPacket::create(
+        PKT_LETTER_MASTER, DEFAULT_NODE_ID, nodeId, NO_SEQUENCE, str.length(), str.c_str());
+    Packet* responseOuterPkt = UDPPacket::create(
+        self, destHap, responseInnerPkt->c_str_length(), responseInnerPkt->c_str());
+    sock.sendPacket(responseOuterPkt); 
+}
+
