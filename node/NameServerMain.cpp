@@ -89,9 +89,6 @@ int main(int argc, char** argv){
                     cout << "Heartbeat!" << endl;
                     cout << "\tNode Id: " << senderId << endl;
                     cout << "\tNode Hap: " << senderHap << endl;
-                    
-                    
-                    
                 }
                 else if(innerPkt->getPacketType() == PKT_LETTER_MASTER){
                     cout << "Master Registration!" << endl;
@@ -112,10 +109,12 @@ int main(int argc, char** argv){
                     }
                     
                     // Send ACK to master
+                    SendingSocket sock(senderHap.getIP(), senderHap.getPort());
                     BigBuckPacket* responseInnerPkt = BigBuckPacket::create( 
                         'A', DEFAULT_NODE_ID, DEFAULT_NODE_ID, NO_SEQUENCE, NO_PAYLOAD, EMPTY_PAYLOAD );
                     Packet* responseOuterPkt = UDPPacket::create(
                         self, senderHap, responseInnerPkt->c_str_length(), responseInnerPkt->c_str());
+                    sock.sendPacket(responseOuterPkt);
                 }
             }
         }
