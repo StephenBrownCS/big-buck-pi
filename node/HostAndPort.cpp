@@ -8,7 +8,7 @@ using namespace std;
 
 
 unsigned int HostAndPort::getIP() const{
-    return ntohl(ipAddressStrToLong(ipAddr));
+    return ipAddressStrToLong(ipAddr);
 }
 
 ostream& operator<< (ostream& os, const HostAndPort& hap){

@@ -106,7 +106,7 @@ unsigned short registerWithNameServer(HostAndPort & self, HostAndPort & masterHa
 
     cout << nameServerHap << endl;
     
-    SendingSocket sock(nameServerIp, nameServerPort);
+    SendingSocket sock(htonl(nameServerIp), nameServerPort);
     BigBuckPacket* registrationPkt = 
         BigBuckPacket::create(
             'R', DEFAULT_NODE_ID, DEFAULT_NODE_ID, NO_SEQUENCE, NO_PAYLOAD, EMPTY_PAYLOAD
@@ -115,8 +115,12 @@ unsigned short registerWithNameServer(HostAndPort & self, HostAndPort & masterHa
             self, nameServerHap, registrationPkt->c_str_length(), registrationPkt->c_str()
         );
         
-    cout << outerPkt << endl;
+    outerPkt->print();
         
+
+    UDPPacket* copy = UDPPacket::create(outerPkt->c_str());
+    copy->print();
+
     sock.sendPacket(
         outerPkt
     );
@@ -128,7 +132,7 @@ unsigned short registerWithNameServer(HostAndPort & self, HostAndPort & masterHa
     
     // RECEIVE NODE ID FROM THE REGISTRATION RESPONSE    
     ListeningSocket listenSock( OWN_LISTEN_PORT );
-    UDPPacket* outerPkt = listenSock.receivePacket();
+    outerPkt = listenSock.receivePacket();
     BigBuckPacket* innerPkt = BigBuckPacket::create(outerPkt->getPayload());
     
     unsigned int ownNodeId = innerPkt->getDestNodeId();

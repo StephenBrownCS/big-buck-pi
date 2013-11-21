@@ -55,6 +55,9 @@ int main(int argc, char** argv){
             if(listenSock.isPacketWaiting()){               
                 UDPPacket* incomingPkt = listenSock.receivePacket(0.1);
                 BigBuckPacket* innerPkt = BigBuckPacket::create(incomingPkt->getPayload());
+
+                incomingPkt->print();
+
                 unsigned short senderId = innerPkt->getSrcNodeId();
                 HostAndPort senderHap = incomingPkt->getSrc();
                 
@@ -70,7 +73,7 @@ int main(int argc, char** argv){
                     cout << "Assigned node id of " << nodeId << endl;
                     
                     // Respond with node Id
-                    SendingSocket sock(senderHap.getIP(), senderHap.getPort());
+                    SendingSocket sock(htonl(senderHap.getIP()), senderHap.getPort());
                     cout << "Sending response to " << senderHap << endl;
 
                     // Send the response and clean up
@@ -111,7 +114,7 @@ int main(int argc, char** argv){
                     }
                     
                     // Send ACK to master
-                    SendingSocket sock(senderHap.getIP(), senderHap.getPort());
+                    SendingSocket sock(htonl(senderHap.getIP()), senderHap.getPort());
                     BigBuckPacket* responseInnerPkt = BigBuckPacket::create( 
                         'A', DEFAULT_NODE_ID, DEFAULT_NODE_ID, NO_SEQUENCE, NO_PAYLOAD, EMPTY_PAYLOAD );
                     Packet* responseOuterPkt = UDPPacket::create(
