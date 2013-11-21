@@ -127,10 +127,10 @@ void BigBuckPacket::assemblePacketString(){
     packet_as_str[0] = packetType;
     
     short* short_ptr = (short *)(packet_as_str + 1);
-    *short_ptr = htonl(srcNodeId);
+    *short_ptr = htons(srcNodeId);
     
     short_ptr = (short *)(packet_as_str + 3);
-    *short_ptr = htonl(destNodeId);
+    *short_ptr = htons(destNodeId);
     
     // place the sequence number
     int* int_ptr = (int *)(packet_as_str + 5);
