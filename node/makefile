@@ -115,13 +115,13 @@ debug:
 test-receiver:
 	g++ -g TestReceiver.cpp Packet.cpp SendingSocket.cpp ListeningSocket.cpp \
                     UDPPacket.cpp BigBuckPacket.cpp \
-                    HostAndPort.cpp Utility.cpp \
+                    HostAndPort.cpp Utility.cpp PacketConstants.cpp \
                     -o receiver	
                     
 test-sender:
 	g++ -g TestSender.cpp Packet.cpp SendingSocket.cpp ListeningSocket.cpp \
                     UDPPacket.cpp BigBuckPacket.cpp \
-                    HostAndPort.cpp Utility.cpp \
+                    HostAndPort.cpp Utility.cpp PacketConstants.cpp \
                     -o sender	     
                     
 name-server: NameServerMain.cpp Packet.cpp SendingSocket.cpp ListeningSocket.cpp UDPPacket.cpp BigBuckPacket.cpp HostAndPort.cpp Utility.cpp PacketConstants.cpp Packet.h SendingSocket.h ListeningSocket.h UDPPacket.h BigBuckPacket.h HostAndPort.h Utility.h PacketConstants.h

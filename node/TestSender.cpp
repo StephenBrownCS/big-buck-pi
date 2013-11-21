@@ -1,61 +1,83 @@
 #include <iostream>
+#include <sstream>
+#include "ListeningSocket.h"
 #include "SendingSocket.h"
 #include "Packet.h"
 #include "UDPPacket.h"
 #include "BigBuckPacket.h"
 #include "Utility.h"
 #include "HostAndPort.h"
+#include "PacketConstants.h"
 
 using namespace std;
 
+const int OWN_LISTEN_PORT = 8888;
+const char* NAME_SERVER_NAME = "cedar.cs.wisc.edu";
+
+unsigned short registerWithNameServer(HostAndPort & self, HostAndPort & masterHap );
+
 int main(){
     try{    
-        unsigned int destIP = ipAddressStrToLong("128.105.34.152");
-        int destPort = 8888;//44444;//55003;
-        cout << "destIP: " << destIP << endl;
-        cout << "destPort: " << destPort << endl;
-        
         // For testing name server
-        HostAndPort self(getOwnIPAddress(), destPort);
+        HostAndPort self(getOwnIPAddress(), 8888);
+        HostAndPort masterHap;
         
-        unsigned int ownIPAddress = (unsigned int) getOwnIPAddress();
-        string srcIP = convertIntToIPAddressString(ownIPAddress);
-        int srcPort = 55004;
-        cout << "Own IP Address: " << srcIP << endl;
-        
-        
-        // Register with the name server
-        unsigned long nameServerIp = ntohl(getIPAddressForHostname("cedar.cs.wisc.edu"));
-        unsigned short nameServerPort = 8888;
-    
-        cout << "Name Server IP: " << nameServerIp << endl;
-    
-        HostAndPort nameServerHap(nameServerIp, nameServerPort);
-        SendingSocket sock(nameServerIp, nameServerPort);
-        BigBuckPacket* registrationPkt = BigBuckPacket::create('R', 0, 0, 5, "node");
-        sock.sendPacket(UDPPacket::create(self, nameServerHap, registrationPkt->c_str_length(), registrationPkt->c_str()));        
-        cout << "Sent the packet to name server!" << endl;
-        
-        HostAndPort srcHap( srcIP, srcPort );
-        HostAndPort destHap( destIP, destPort );
-        SendingSocket sendSock(destIP, destPort);
-        
-        Packet* bigBuckPkt = BigBuckPacket::create('H', 0, 1, 1, 5, "hello");
-        bigBuckPkt->print();
-        BigBuckPacket::create(bigBuckPkt->c_str())->print();
-        
-        UDPPacket* udpPkt = UDPPacket::create(
-            srcHap, destHap, bigBuckPkt->c_str_length(), bigBuckPkt->c_str());
-                
-        for(int i = 0; i < 1; i++){
-            cout << "Sending packet" << endl;
-            sendSock.sendPacket(udpPkt);
-        }
-        delete udpPkt;
-        delete bigBuckPkt;
+        registerWithNameServer(self, masterHap);
     }
     catch(Error & e){
         cout << e.getMsg() << endl;
     }
     return 0;
+}
+
+unsigned short registerWithNameServer(HostAndPort & self, HostAndPort & masterHap){
+    // Register with the name server
+    unsigned long nameServerIp = ntohl(getIPAddressForHostname(NAME_SERVER_NAME));
+    unsigned short nameServerPort = 8888;
+    
+    cout << "Name Server IP: " << nameServerIp << endl;
+    
+    HostAndPort nameServerHap(nameServerIp, nameServerPort);
+    SendingSocket sock(nameServerIp, nameServerPort);
+    BigBuckPacket* registrationPkt = 
+        BigBuckPacket::create(
+            'R', DEFAULT_NODE_ID, DEFAULT_NODE_ID, NO_SEQUENCE, NO_PAYLOAD, EMPTY_PAYLOAD
+        );
+    sock.sendPacket(
+        UDPPacket::create(
+            self, nameServerHap, registrationPkt->c_str_length(), registrationPkt->c_str()
+            )
+        );    
+    
+    cout << "Sent the packet to name server!" << endl;
+    
+    // RECEIVE NODE ID FROM THE REGISTRATION RESPONSE    
+    ListeningSocket listenSock( OWN_LISTEN_PORT );
+    UDPPacket* outerPkt = listenSock.receivePacket();
+    BigBuckPacket* innerPkt = BigBuckPacket::create(outerPkt->getPayload());
+    
+    unsigned int ownNodeId = innerPkt->getDestNodeId();
+    cout << "Assigned Node ID: " << ownNodeId << endl;
+    
+    delete outerPkt;
+    delete innerPkt;
+    
+    // WAIT UNTIL WE GET A MASTER REGISTRATION PACKET 
+    bool waitingForMasterPacket = true;
+    while( waitingForMasterPacket ){
+        UDPPacket* outerPkt = listenSock.receivePacket();
+        BigBuckPacket* innerPkt = BigBuckPacket::create( outerPkt->getPayload() );
+        if( innerPkt->getPacketType() == PKT_LETTER_MASTER){
+            istringstream iss(innerPkt->getPayload());
+            iss >> masterHap;
+            cout << "Master Hap: " << masterHap << endl;
+            waitingForMasterPacket = false;
+        }
+        delete outerPkt;
+        delete innerPkt;
+    }
+    
+    listenSock.closeSocket();
+    
+    return ownNodeId;   
 }
