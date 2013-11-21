@@ -22,6 +22,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
+#include <chrono>
+#include <thread>
 #include <netpacket/packet.h>
 #include <net/ethernet.h>
 #include "SendingSocket.h"
@@ -37,6 +39,8 @@
 #include "PacketConstants.h"
 
 using namespace std;
+using std::this_thread::sleep_for;
+using std::chrono::milliseconds;
 
 const int OWN_LISTEN_PORT = 8888;
 const char* NAME_SERVER_NAME = "cedar.cs.wisc.edu";
@@ -63,33 +67,37 @@ int main(int argc, char** argv){
 
     cout << "Own Hap: << " << self << endl;
     
-    try{    
-        unsigned int ownNodeId = registerWithNameServer(self, masterHap);
-        Communicator* communicator = 
-            WifiCommunicator::create( 
-                masterHap.getIPAsStr().c_str(), masterHap.getPort(), OWN_LISTEN_PORT
-            );
+    while( true ){
+        try{    
+            unsigned int ownNodeId = registerWithNameServer(self, masterHap);
+            Communicator* communicator = 
+                WifiCommunicator::create( 
+                    masterHap.getIPAsStr().c_str(), masterHap.getPort(), OWN_LISTEN_PORT
+                );
             
-        Sensor* sensor = PIRSensor::create();
+            Sensor* sensor = PIRSensor::create();
         
-        BigBuckSensingNode* sensingNode = 
-            BigBuckSensingNode::create(
-                communicator, sensor, ownNodeId
+            BigBuckSensingNode* sensingNode = 
+                BigBuckSensingNode::create(
+                    communicator, sensor, ownNodeId
+                );
+        
+            // SEND HELLO TO THE MASTER
+            communicator->sendPacket(
+                BigBuckPacket::create(
+                    'H', ownNodeId, DEFAULT_NODE_ID, NO_SEQUENCE, NO_PAYLOAD, EMPTY_PAYLOAD
+                )
             );
         
-        // SEND HELLO TO THE MASTER
-        communicator->sendPacket(
-            BigBuckPacket::create(
-                'H', ownNodeId, DEFAULT_NODE_ID, NO_SEQUENCE, NO_PAYLOAD, EMPTY_PAYLOAD
-            )
-        );
+            sensingNode->sensingLoop();
         
-        sensingNode->sensingLoop();
-        
-        delete sensingNode;
-    }
-    catch(Error & e){
-        cout << e.getMsg() << endl;
+            delete sensingNode;
+        }
+        catch(Error & e){
+            cout << e.getMsg() << endl;
+        }
+    
+        sleep_for(milliseconds( 10000 ));
     }
     return 0;
 }
