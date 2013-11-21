@@ -103,6 +103,8 @@ unsigned short registerWithNameServer(HostAndPort & self, HostAndPort & masterHa
     cout << "Name Server IP: " << convertIntToIPAddressString(nameServerIp) << endl;
     
     HostAndPort nameServerHap(nameServerIp, nameServerPort);
+
+    cout << nameServerHap << endl;
     
     SendingSocket sock(nameServerIp, nameServerPort);
     BigBuckPacket* registrationPkt = 
