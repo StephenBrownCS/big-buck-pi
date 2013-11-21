@@ -65,6 +65,7 @@ int main(int argc, char** argv){
                     
                     // Respond with node Id
                     SendingSocket sock(senderHap.getIP(), senderHap.getPort());
+                    cout << "Sending response to " << senderHap << endl;
 
                     // Send the response and clean up
                     BigBuckPacket* responseInnerPkt = BigBuckPacket::create( 
