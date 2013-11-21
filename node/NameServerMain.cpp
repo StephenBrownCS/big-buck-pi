@@ -75,7 +75,7 @@ int main(int argc, char** argv){
 
                     // Send the response and clean up
                     BigBuckPacket* responseInnerPkt = BigBuckPacket::create( 
-                        'A', DEFAULT_NODE_ID, nodeId, NO_SEQUENCE, NO_PAYLOAD, EMPTY_PAYLOAD );
+                        'A', DEFAULT_NODE_ID, nodeId, NO_SEQUENCE + 1, NO_PAYLOAD, EMPTY_PAYLOAD );
                     Packet* responseOuterPkt = UDPPacket::create(
                         self, senderHap, responseInnerPkt->c_str_length(), responseInnerPkt->c_str());
                         
