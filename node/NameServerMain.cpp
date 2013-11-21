@@ -35,7 +35,7 @@ int main(int argc, char** argv){
     }
     */
     
-    HostAndPort self(getOwnIPAddress(), PORT);
+    HostAndPort self(ntohl(getOwnIPAddress()), PORT);
     cout << "Own Hap: " << self << endl;
     
     // Always listen on port 8888

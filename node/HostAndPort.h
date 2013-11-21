@@ -27,19 +27,21 @@ public:
         ipAddr(ipAddr_), port(port_) {}
         
     // Constructor from an unsigned int IP
-    // ip and port must both be in host-byte order
+    // ip and port must both be in host-byte order TODO change to network byte order
     HostAndPort(unsigned int ip, unsigned short port_){
         ipAddr = convertIntToIPAddressString(ip);
         port = port_;
     }
 
-    // Getters and Setters for IP as a .-separated IPv4 string
+    // Getters and Setters for IP as a .-separated IPv4 string in host order
     std::string getIPAsStr() const{ return ipAddr; }
     void setIPStr(std::string ipAddr_) { ipAddr = ipAddr_; }
     
     // Getter for IP as an unsigned int in network-byte order
     unsigned int getIP() const;
-    void setIP(long ip){ ipAddr = convertIntToIPAddressString(ip); }
+    
+    // Takes in IP in network-byte order
+    void setIP(long ip){ ipAddr = ntohl(convertIntToIPAddressString(ip)); }
     
     // Getters and Setters for short port
     unsigned short getPort() const { return port; }
@@ -58,7 +60,7 @@ public:
     }
 
 private:
-    std::string ipAddr;
+    std::string ipAddr; /// Always in the correct human-readable order
     unsigned short port;
 };
 
