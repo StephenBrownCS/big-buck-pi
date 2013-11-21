@@ -1,5 +1,6 @@
 #include <iostream>
 #include <sstream>
+#include <arpa/inet.h>
 #include "ListeningSocket.h"
 #include "SendingSocket.h"
 #include "Packet.h"
@@ -38,6 +39,7 @@ unsigned short registerWithNameServer(HostAndPort & self, HostAndPort & masterHa
     cout << "Name Server IP: " << convertIntToIPAddressString(nameServerIp) << endl;
     
     HostAndPort nameServerHap(nameServerIp, nameServerPort);
+    
     SendingSocket sock(nameServerIp, nameServerPort);
     BigBuckPacket* registrationPkt = 
         BigBuckPacket::create(
