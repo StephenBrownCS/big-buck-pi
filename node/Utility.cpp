@@ -55,7 +55,7 @@ unsigned long ipAddressStrToLong(std::string ipAddress){
     string last = ipAddress.substr(previousPeriodLocation + 1, 4);
     result += atoi(last.c_str());
 
-    return ntohl(result);
+    return result;
 }
 
 

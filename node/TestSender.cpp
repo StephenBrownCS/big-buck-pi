@@ -33,13 +33,13 @@ int main(){
 
 unsigned short registerWithNameServer(HostAndPort & self, HostAndPort & masterHap){
     // Register with the name server
-    unsigned long nameServerIp = ntohl(getIPAddressForHostname(NAME_SERVER_NAME));
+    unsigned long nameServerIp = getIPAddressForHostname(NAME_SERVER_NAME);
     unsigned short nameServerPort = NAME_SERVER_PORT;
-    
-    cout << "Name Server IP: " << convertIntToIPAddressString(nameServerIp) << endl;
     
     HostAndPort nameServerHap(nameServerIp, nameServerPort);
     
+    cout << "Name Server Hap: " << nameServerHap << endl;
+
     SendingSocket sock(nameServerIp, nameServerPort);
     BigBuckPacket* registrationPkt = 
         BigBuckPacket::create(

@@ -12,6 +12,7 @@
 
 
 #include <iostream>
+#include <cstring>
 #include <sstream>
 #include <sys/types.h>
 #include <ifaddrs.h>
@@ -59,6 +60,8 @@ int main(int argc, char** argv){
     
     HostAndPort self(getOwnWlanIpAddress(), OWN_LISTEN_PORT);
     HostAndPort masterHap;
+
+    cout << "Own Hap: << " << self << endl;
     
     try{    
         unsigned int ownNodeId = registerWithNameServer(self, masterHap);
@@ -186,11 +189,16 @@ unsigned long getOwnWlanIpAddress(){
                exit(EXIT_FAILURE);
            }
            printf("\taddress: <%s>\n", host);
+           if ( strcmp(ifa->ifa_name, "wlan0") == 0  ){
+               cout << "Returning wlan0 address" << endl;
+               freeifaddrs(ifaddr);
+	       return ipAddressStrToLong(host);
+           } 
        }
    }
 
    freeifaddrs(ifaddr);
-   return s;
+   return -1;
 }
 
 

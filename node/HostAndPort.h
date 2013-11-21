@@ -28,9 +28,9 @@ public:
         ipAddr(ipAddr_), port(port_) {}
         
     // Constructor from an unsigned int IP
-    // ip and port must both be in host-byte order TODO change to network byte order
+    // ip and port must both be in network byte order
     HostAndPort(unsigned int ip, unsigned short port_){
-        ipAddr = convertIntToIPAddressString(ip);
+        ipAddr = convertIntToIPAddressString(ntohl(ip));
         port = port_;
     }
 
