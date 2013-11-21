@@ -31,7 +31,7 @@ int main(){
                 Packet* bigBuckPkt = BigBuckPacket::create(pkt->getPayload());
                 bigBuckPkt->print();
             }
-            sleep(1);
+            //sleep(1);
         }
     }
     catch(Error & e){

@@ -35,7 +35,7 @@ unsigned short registerWithNameServer(HostAndPort & self, HostAndPort & masterHa
     unsigned long nameServerIp = ntohl(getIPAddressForHostname(NAME_SERVER_NAME));
     unsigned short nameServerPort = 8888;
     
-    cout << "Name Server IP: " << nameServerIp << endl;
+    cout << "Name Server IP: " << convertIntToIPAddressString(nameServerIp) << endl;
     
     HostAndPort nameServerHap(nameServerIp, nameServerPort);
     SendingSocket sock(nameServerIp, nameServerPort);
