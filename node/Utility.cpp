@@ -108,7 +108,7 @@ long getIPAddressForHostname(string hostName){
     //return addr.s_addr;
     int result = 0;
     result = *(int *)hp->h_addr_list[0];
-    return ntohl(result);
+    return result;
 }
 
 

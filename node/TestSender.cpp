@@ -23,6 +23,10 @@ int main(){
         HostAndPort self(getOwnIPAddress(), OWN_LISTEN_PORT);
         HostAndPort masterHap;
         
+        cout << self << endl;
+        HostAndPort cop( self.getIP(), OWN_LISTEN_PORT );
+        cout << cop << endl;
+        
         registerWithNameServer(self, masterHap);
     }
     catch(Error & e){
