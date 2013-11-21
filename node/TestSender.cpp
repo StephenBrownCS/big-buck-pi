@@ -58,6 +58,8 @@ unsigned short registerWithNameServer(HostAndPort & self, HostAndPort & masterHa
     UDPPacket* outerPkt = listenSock.receivePacket();
     BigBuckPacket* innerPkt = BigBuckPacket::create(outerPkt->getPayload());
     
+    innerPkt->print();
+    
     unsigned int ownNodeId = innerPkt->getDestNodeId();
     cout << "Assigned Node ID: " << ownNodeId << endl;
     
