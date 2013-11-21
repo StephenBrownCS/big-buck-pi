@@ -1,11 +1,18 @@
 /*
-    1) Listens on port 8888
-    2) Expects to receive a UDP Packet with no payload (this will identify the 
-        sender)
+    Main Driver File for What is Run on Each Raspberry Pi Sensor
+    
+    This program runs the logic for each sensing node.
+    Startup Protocol:
+        1) Sends Registration Request to Name Server (location is known)
+        2) Name Server responds with ACK which contains this node's Id assignment
+        3) This node waits for a Master Registration request (which can come 
+            from either the name server or the master node itself)
+        4) Begin sensing and sending data
 */
 
 
 #include <iostream>
+#include <sstream>
 #include "SendingSocket.h"
 #include "Packet.h"
 #include "UDPPacket.h"
@@ -16,10 +23,12 @@
 #include "WifiCommunicator.h"
 #include "BigBuckSensingNode.h"
 #include "ListeningSocket.h"
+#include "PacketConstants.h"
 
 using namespace std;
 
-const int PORT = 8888;
+const int OWN_LISTEN_PORT = 8888;
+const char* NAME_SERVER_NAME = "cedar.cs.wisc.edu";
 
 int main(int argc, char** argv){
     const char* destIpAddress = 0;
@@ -35,42 +44,77 @@ int main(int argc, char** argv){
     }
     */
     
-    HostAndPort self(getOwnIPAddress(), PORT);
+    HostAndPort self(getOwnIPAddress(), OWN_LISTEN_PORT);
+    HostAndPort masterHap;
     
     // Register with the name server
-    unsigned long nameServerIp = ntohl(getIPAddressForHostname("cedar.cs.wisc.edu"));
+    unsigned long nameServerIp = ntohl(getIPAddressForHostname(NAME_SERVER_NAME));
     unsigned short nameServerPort = 8888;
     
     cout << "Name Server IP: " << nameServerIp << endl;
     
     HostAndPort nameServerHap(nameServerIp, nameServerPort);
     SendingSocket sock(nameServerIp, nameServerPort);
-    BigBuckPacket* registrationPkt = BigBuckPacket::create('R', 0, 0, 5, "node");
-    sock.sendPacket(UDPPacket::create(self, nameServerHap, registrationPkt->c_str_length(), registrationPkt->c_str()));    
+    BigBuckPacket* registrationPkt = 
+        BigBuckPacket::create(
+            'R', DEFAULT_NODE_ID, DEFAULT_NODE_ID, NO_SEQUENCE, NO_PAYLOAD, EMPTY_PAYLOAD
+        );
+    sock.sendPacket(
+        UDPPacket::create(
+            self, nameServerHap, registrationPkt->c_str_length(), registrationPkt->c_str()
+            )
+        );    
     
     cout << "Sent the packet to name server!" << endl;
     
-    // Always listen on port 8888
-    ListeningSocket listenSock( PORT );
-    
-    // Get the first packet that will tell us where to send our packets to
-    UDPPacket* setupPkt = listenSock.receivePacket();
-    HostAndPort srcHap = setupPkt->getSrc();
-    destIpAddress = srcHap.getIPAsStr().c_str();
-    destPort = srcHap.getPort();
-    
-    cout << "Dest IP Address: " << destIpAddress << endl;
+    // RECEIVE NODE ID FROM THE REGISTRATION SERVER
+    unsigned short ownNodeId = 0;
+    ListeningSocket listenSock( OWN_LISTEN_PORT );
+    UDPPacket* outerPkt = listenSock.receivePacket();
+    BigBuckPacket* innerPkt = BigBuckPacket::create(outerPkt->getPayload());
+    ownNodeId = innerPkt->getDestNodeId();
+    cout << "Assigned Node ID: " << ownNodeId << endl;
+
     cout << "Dest Port: " << destPort << endl;
+    delete outerPkt;
+    delete innerPkt;
     
-    delete setupPkt;
+    // WAIT UNTIL WE GET A MASTER REGISTRATION PACKET 
+    bool waitingForMasterPacket = true;
+    while( waitingForMasterPacket ){
+        outerPkt = listenSock.receivePacket();
+        innerPkt = BigBuckPacket::create( outerPkt->getPayload() );
+        if( innerPkt->getPacketType() == PKT_LETTER_MASTER){
+            istringstream iss(innerPkt->getPayload());
+            iss >> masterHap;
+            cout << "Master Hap: " << masterHap << endl;
+            waitingForMasterPacket = false;
+        }
+        delete outerPkt;
+        delete innerPkt;
+    }
+    
     listenSock.closeSocket();
 
     try{    
-        Communicator* communicator = WifiCommunicator::create( destIpAddress, destPort, PORT );
+        Communicator* communicator = 
+            WifiCommunicator::create( 
+                masterHap.getIPAsStr().c_str(), masterHap.getPort(), OWN_LISTEN_PORT
+            );
+            
         Sensor* sensor = PIRSensor::create();
-        BigBuckSensingNode* sensingNode = BigBuckSensingNode::create(communicator, sensor, 0);
         
-        communicator->sendPacket(BigBuckPacket::create('H', 22, 33, 28, 0, 0));
+        BigBuckSensingNode* sensingNode = 
+            BigBuckSensingNode::create(
+                communicator, sensor, ownNodeId
+            );
+        
+        // SEND HELLO TO THE MASTER
+        communicator->sendPacket(
+            BigBuckPacket::create(
+                'H', ownNodeId, DEFAULT_NODE_ID, NO_SEQUENCE, NO_PAYLOAD, EMPTY_PAYLOAD
+            )
+        );
         
         sensingNode->sensingLoop();
         

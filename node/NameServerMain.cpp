@@ -15,19 +15,11 @@
 #include "BigBuckPacket.h"
 #include "Utility.h"
 #include "HostAndPort.h"
+#include "PacketConstants.h"
 
 using namespace std;
 
 const int PORT = 8888;
-
-const char PKT_LETTER_REGISTRATION = 'R';
-const char PKT_LETTER_ACK = 'A';
-const char PKT_LETTER_HEARTBEAT = 'H';
-const char PKT_LETTER_MASTER = 'M';
-
-const int DEFAULT_NODE_ID = 0;
-const int NO_SEQUENCE = 0;
-const int NO_PAYLOAD = 0;
 
 int main(int argc, char** argv){
     const char* destIpAddress = 0;
@@ -75,7 +67,7 @@ int main(int argc, char** argv){
 
                     // Send the response and clean up
                     BigBuckPacket* responseInnerPkt = BigBuckPacket::create( 
-                        'A', DEFAULT_NODE_ID, nodeId, NO_SEQUENCE, 0, NO_PAYLOAD );
+                        'A', DEFAULT_NODE_ID, nodeId, NO_SEQUENCE, NO_PAYLOAD, EMPTY_PAYLOAD );
                     Packet* responseOuterPkt = UDPPacket::create(
                         self, senderHap, responseInnerPkt->c_str_length(), responseInnerPkt->c_str());
                     sock.sendPacket(responseOuterPkt);
@@ -116,8 +108,6 @@ int main(int argc, char** argv){
                         sock.sendPacket(responseOuterPkt); 
                     }
                 }
-                
-                
             }
         }
     }

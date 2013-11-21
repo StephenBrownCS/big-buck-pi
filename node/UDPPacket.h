@@ -1,25 +1,33 @@
 
-/*  A UDP_Packet Object
-    Represents a UDP UDP_Packet, can be constructed from either the 
-    component parts (UDP_PacketType, sequence, length, and payload) or
-    from a c-string in network order.
+/*  A UDPPacket Object
+    Represents a UDP Packet, can be constructed from either the 
+    component parts (Source host and port, Destination host and port, Payload length, and payload) or
+    from a c-string in network byte order.
     
     Once constructed, you can access its member variables
     through the public interface, which provides getters for all of them.
     You can also use the c_str() function to get a c-string representing the UDP_Packet
+    
+    Encapsulates the following data members:
+        Source IP Address ( 4 bytes )
+        Source Port ( 2 bytes )
+        Destination IP Address ( 4 bytes )
+        Destination Port ( 2 bytes )
+        Payload Length ( 4 bytes )
+        Payload ( flexible length )
     
     Example Usage:
  
  (From component parts)
     char filename[20] = "hello-world.cpp";
     
-    UDP_Packet p('D', 24, strlen(filename) + 1, filename);
-    cout << p.getUDP_PacketType() << endl;
-    cout << p.getSequence() << endl;
+    UDPPacket* p = UDPPacket::create( srcHap, destHap , strlen(filename) + 1, filename);
+    cout << p.getSrc() << endl;
+    cout << p.getDest() << endl;
     cout << p.getPayloadLength() << endl;
     cout << p.getPayload() << endl;
     
-    sending_socket.sendPacket(p);
+    sendingSocket.sendPacket(p);
 */
 
 #ifndef UDP_Packet_H_
@@ -32,8 +40,9 @@
 class UDPPacket : public Packet{
 public: 
     //Named Constructor Idiom, all packets are to be created on the heap
-    static UDPPacket* create(const HostAndPort & src, const HostAndPort & dest, 
-        unsigned int length_, const char* payload_);
+    static UDPPacket* create(
+        const HostAndPort & src, const HostAndPort & dest, unsigned int length_, const char* payload_
+        );
     
     static UDPPacket* create(const char* rawString);
     
