@@ -111,11 +111,18 @@ unsigned short registerWithNameServer(HostAndPort & self, HostAndPort & masterHa
         BigBuckPacket::create(
             'R', DEFAULT_NODE_ID, DEFAULT_NODE_ID, NO_SEQUENCE, NO_PAYLOAD, EMPTY_PAYLOAD
         );
-    sock.sendPacket(
-        UDPPacket::create(
+    UDPPacket* outerPkt = UDPPacket::create(
             self, nameServerHap, registrationPkt->c_str_length(), registrationPkt->c_str()
-            )
-        );    
+        );
+        
+    cout << outerPkt << endl;
+        
+    sock.sendPacket(
+        outerPkt
+    );
+        
+    delete registrationPkt;
+    delete outerPkt;
     
     cout << "Sent the packet to name server!" << endl;
     
