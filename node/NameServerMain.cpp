@@ -36,7 +36,7 @@ int main(int argc, char** argv){
     }
     */
     
-    HostAndPort self(getOwnIPAddress(), NAME_SERVER_PORT);
+    HostAndPort self(htonl(getOwnIPAddress()), NAME_SERVER_PORT);
     HostAndPort masterHap;
     bool masterIsKnown = false;
     

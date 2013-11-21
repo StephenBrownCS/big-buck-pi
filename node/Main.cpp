@@ -106,7 +106,7 @@ unsigned short registerWithNameServer(HostAndPort & self, HostAndPort & masterHa
 
     cout << nameServerHap << endl;
     
-    SendingSocket sock(htonl(nameServerIp), nameServerPort);
+    SendingSocket sock(nameServerIp, nameServerPort);
     BigBuckPacket* registrationPkt = 
         BigBuckPacket::create(
             'R', DEFAULT_NODE_ID, DEFAULT_NODE_ID, NO_SEQUENCE, NO_PAYLOAD, EMPTY_PAYLOAD
