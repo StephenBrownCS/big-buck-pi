@@ -133,7 +133,7 @@ int main(int argc, char** argv){
 
 void sendMasterHapToNode( HostAndPort & self, HostAndPort & destHap, HostAndPort & masterHap, unsigned short nodeId){
     
-    SendingSocket sock(destHap.getIP(), destHap.getPort());
+    SendingSocket sock(htonl(destHap.getIP()), destHap.getPort());
     
     // Serialize hap into a string and send it
     ostringstream os;
