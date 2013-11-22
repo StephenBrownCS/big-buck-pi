@@ -62,13 +62,12 @@ int main(int argc, char** argv){
     }
     */
     
-    HostAndPort self(getOwnWlanIpAddress(), OWN_LISTEN_PORT);
-    HostAndPort masterHap;
-
-    cout << "Own Hap: << " << self << endl;
-    
     while( true ){
-        try{    
+        try{ 
+            HostAndPort self(getOwnWlanIpAddress(), OWN_LISTEN_PORT);
+            HostAndPort masterHap;
+
+            cout << "Own Hap: << " << self << endl;
             unsigned int ownNodeId = registerWithNameServer(self, masterHap);
             Communicator* communicator = 
                 WifiCommunicator::create( 
