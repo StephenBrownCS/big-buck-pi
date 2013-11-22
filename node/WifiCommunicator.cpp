@@ -16,11 +16,9 @@ WifiCommunicator::WifiCommunicator( const char* baseIPAddress_, const int basePo
     ownHap.setIP( (unsigned int) getOwnIPAddress() );
     ownHap.setPort( ownPort_ );
 
-    cout << "destIP: " << baseHap.getIP() << endl;
-    cout << "destPort: " << baseHap.getPort() << endl;
-    
-    cout << "Own IP Address: " << ownHap.getIP() << endl;
-    sendSock = new SendingSocket( baseHap.getIP(), baseHap.getPort());
+    cout << "self: " << ownHap << endl;
+    cout << "dest: " << baseHap << endl;
+    sendSock = new SendingSocket( ntohl(baseHap.getIP()), baseHap.getPort());
     listenSock = new ListeningSocket( ownHap.getPort() );
 }
 

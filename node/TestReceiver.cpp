@@ -25,6 +25,8 @@ using namespace std;
 int main(){
     try{
         HostAndPort self(ntohl(getOwnIPAddress()), OWN_LISTEN_PORT);
+
+       cout << "self: " << self << endl;
     
         // Register with the name server
         unsigned long nameServerIp = getIPAddressForHostname(NAME_SERVER_NAME);
