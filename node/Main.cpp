@@ -97,8 +97,12 @@ int main(int argc, char** argv){
         catch(Error & e){
             logger << e.getMsg() << endl;
         }
+        catch(SocketTimeoutException & e){
+            logger << "Socket Timeout Exception " << endl;
+        }
     
         sleep_for(milliseconds( 10000 ));
+        logger << "Retrying" << endl;
     }
     return 0;
 }
