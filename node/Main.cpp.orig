@@ -63,12 +63,22 @@ int main(int argc, char** argv){
     }
     */
     
+<<<<<<< HEAD
+=======
+    HostAndPort self(getOwnWlanIpAddress(), OWN_LISTEN_PORT);
+    HostAndPort masterHap;
+    
+    Logger logger("/home/big-buck-node-log.txt");
+
+    logger << "Own Hap: << " << self << endl;
+    
+>>>>>>> Added logging module to Main.cpp
     while( true ){
         try{ 
             HostAndPort self(getOwnWlanIpAddress(), OWN_LISTEN_PORT);
             HostAndPort masterHap;
 
-            logger << "Own Hap: << " << self << endl;
+            cout << "Own Hap: << " << self << endl;
             unsigned int ownNodeId = registerWithNameServer(self, masterHap);
             Communicator* communicator = 
                 WifiCommunicator::create( 
