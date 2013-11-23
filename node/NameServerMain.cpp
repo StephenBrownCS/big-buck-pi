@@ -55,9 +55,9 @@ int main(int argc, char** argv){
             // SEE IF PACKET IS AVAILABLE
             if(listenSock.isPacketWaiting()){               
                 UDPPacket* incomingPkt = listenSock.receivePacket(0.1);
-                BigBuckPacket* innerPkt = BigBuckPacket::create(incomingPkt->getPayload());
-
                 incomingPkt->print();
+                
+                BigBuckPacket* innerPkt = BigBuckPacket::create(incomingPkt->getPayload());
 
                 unsigned short senderId = innerPkt->getSrcNodeId();
                 HostAndPort senderHap = incomingPkt->getSrc();
