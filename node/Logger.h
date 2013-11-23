@@ -12,7 +12,9 @@ class Logger : public std::ostream {
     
         void log(std::string str);
         
-        std::ofstream& operator>> (std::string & str);
+        std::ofstream& operator<< (const std::string & str);
+        
+        std::ofstream& operator<< (const char* str);
         
     private:
         std::fstream fs;
