@@ -113,7 +113,7 @@ unsigned short registerWithNameServer(HostAndPort & self, HostAndPort & masterHa
     
     HostAndPort nameServerHap(nameServerIp, nameServerPort);
 
-    loger << nameServerHap << endl;
+    logger << nameServerHap << endl;
     
     SendingSocket sock(nameServerIp, nameServerPort);
     BigBuckPacket* registrationPkt = 
