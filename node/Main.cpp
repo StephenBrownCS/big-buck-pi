@@ -108,11 +108,11 @@ unsigned short registerWithNameServer(HostAndPort & self, HostAndPort & masterHa
     unsigned long nameServerIp = getIPAddressForHostname(NAME_SERVER_NAME);
     unsigned short nameServerPort = NAME_SERVER_PORT;
     
-    cout << "Name Server IP: " << convertIntToIPAddressString(nameServerIp) << endl;
+    logger << "Name Server IP: " << convertIntToIPAddressString(nameServerIp) << endl;
     
     HostAndPort nameServerHap(nameServerIp, nameServerPort);
 
-    cout << nameServerHap << endl;
+    loger << nameServerHap << endl;
     
     SendingSocket sock(nameServerIp, nameServerPort);
     BigBuckPacket* registrationPkt = 
@@ -124,10 +124,6 @@ unsigned short registerWithNameServer(HostAndPort & self, HostAndPort & masterHa
         );
         
     outerPkt->print();
-        
-
-    UDPPacket* copy = UDPPacket::create(outerPkt->c_str());
-    copy->print();
 
     sock.sendPacket(
         outerPkt
@@ -136,15 +132,16 @@ unsigned short registerWithNameServer(HostAndPort & self, HostAndPort & masterHa
     delete registrationPkt;
     delete outerPkt;
     
-    cout << "Sent the packet to name server!" << endl;
+    logger << "Sent the packet to name server!" << endl;
     
     // RECEIVE NODE ID FROM THE REGISTRATION RESPONSE    
     ListeningSocket listenSock( OWN_LISTEN_PORT );
-    outerPkt = listenSock.receivePacket();
+    // Listen for 10 seconds
+    outerPkt = listenSock.receivePacket( 10000 );
     BigBuckPacket* innerPkt = BigBuckPacket::create(outerPkt->getPayload());
     
     unsigned int ownNodeId = innerPkt->getDestNodeId();
-    cout << "Assigned Node ID: " << ownNodeId << endl;
+    logger << "Assigned Node ID: " << ownNodeId << endl;
     
     delete outerPkt;
     delete innerPkt;
@@ -157,7 +154,7 @@ unsigned short registerWithNameServer(HostAndPort & self, HostAndPort & masterHa
         if( innerPkt->getPacketType() == PKT_LETTER_MASTER){
             istringstream iss(innerPkt->getPayload());
             iss >> masterHap;
-            cout << "Master Hap: " << masterHap << endl;
+            logger << "Master Hap: " << masterHap << endl;
             waitingForMasterPacket = false;
         }
         delete outerPkt;
@@ -211,9 +208,8 @@ unsigned long getOwnWlanIpAddress(){
            }
            printf("\taddress: <%s>\n", host);
            if ( strcmp(ifa->ifa_name, "wlan0") == 0  ){
-               cout << "Returning wlan0 address" << endl;
-               freeifaddrs(ifaddr);
-	       return ipAddressStrToLong(host);
+                freeifaddrs(ifaddr);
+	            return ipAddressStrToLong(host);
            } 
        }
    }
