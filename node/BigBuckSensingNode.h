@@ -1,6 +1,8 @@
 #ifndef BIG_BUCK_SENSOR_H_
 #define BIG_BUCK_SENSOR_H_
 
+#include "Logger.h"
+
 //Forward References
 class Communicator;
 class Sensor;
@@ -8,7 +10,7 @@ class Sensor;
 class BigBuckSensingNode{
 public:
     // Named Constructor
-    static BigBuckSensingNode* create( Communicator* communicator_, Sensor* sensor_, short id_ );
+    static BigBuckSensingNode* create( Logger& logger_, Communicator* communicator_, Sensor* sensor_, short id_ );
     
     void sensingLoop();
     
@@ -16,11 +18,12 @@ public:
 private:
     Communicator* communicator;
     Sensor* sensor;
+    Logger& logger;
     short id;
     int nextSequence;
     
     // Private Ctor, use named constructors instead
-    BigBuckSensingNode( Communicator* communicator_, Sensor* sensor_, short id_ );
+    BigBuckSensingNode( Logger & logger, Communicator* communicator_, Sensor* sensor_, short id_ );
     
     void sendSensorState( int currentState);
     

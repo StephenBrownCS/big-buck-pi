@@ -37,6 +37,7 @@
 #include "BigBuckSensingNode.h"
 #include "ListeningSocket.h"
 #include "PacketConstants.h"
+#include "Logger.h"
 
 using namespace std;
 using std::this_thread::sleep_for;
@@ -78,7 +79,7 @@ int main(int argc, char** argv){
         
             BigBuckSensingNode* sensingNode = 
                 BigBuckSensingNode::create(
-                    communicator, sensor, ownNodeId
+                    logger, communicator, sensor, ownNodeId
                 );
         
             // SEND HELLO TO THE MASTER
@@ -93,7 +94,7 @@ int main(int argc, char** argv){
             delete sensingNode;
         }
         catch(Error & e){
-            cout << e.getMsg() << endl;
+            logger << e.getMsg() << endl;
         }
     
         sleep_for(milliseconds( 10000 ));

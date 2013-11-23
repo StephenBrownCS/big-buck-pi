@@ -16,11 +16,12 @@ using std::chrono::milliseconds;
 const int BASE_STATION_ID = 7777;
 const int POLLING_RATE = 100; //milliseconds
 
-BigBuckSensingNode* BigBuckSensingNode::create( Communicator* communicator_, Sensor* sensor_, short id_ ){
-    return new BigBuckSensingNode( communicator_, sensor_, id_ );
+BigBuckSensingNode* BigBuckSensingNode::create( Logger& logger_, Communicator* communicator_, Sensor* sensor_, short id_ ){
+    return new BigBuckSensingNode( logger_, communicator_, sensor_, id_ );
 }
 
-BigBuckSensingNode::BigBuckSensingNode(Communicator* communicator_, Sensor* sensor_, short id_):
+BigBuckSensingNode::BigBuckSensingNode(Logger& logger_, Communicator* communicator_, Sensor* sensor_, short id_):
+    logger(logger_),
     communicator( communicator_ ),
     sensor( sensor_ ),
     id( id_),

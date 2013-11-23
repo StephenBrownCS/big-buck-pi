@@ -7,19 +7,19 @@ SENDER_OBJECTS = Packet.o UDPPacket.o BigBuckPacket.o SendingSocket.o ListeningS
                    LinkStatePacket.o \
                    HostAndPort.o Timer.o \
                    PacketConstants.o \
-                   TestSender.o
+                   TestSender.o Logger.o
 RECEIVER_OBJECTS = Packet.o UDPPacket.o BigBuckPacket.o SendingSocket.o ListeningSocket.o \
                    Utility.o \
                    LinkStatePacket.o \
                    HostAndPort.o Timer.o \
                    TestReceiver.o \
-                   PacketConstants.o
+                   PacketConstants.o Logger.o
 BIG_BUCK_NODE_OBJECTS = Packet.o UDPPacket.o BigBuckPacket.o SendingSocket.o ListeningSocket.o \
                    Utility.o PacketConstants.o \
                    LinkStatePacket.o \
                    HostAndPort.o Timer.o \
                    PIRSensor.o WifiCommunicator.o BigBuckSensingNode.o \
-                   Main.o
+                   Main.o Logger.o
 
 
 #all: This the old make all
@@ -85,6 +85,9 @@ SendingSocket.o: SendingSocket.h SendingSocket.cpp Packet.h
 	
 ListeningSocket.o: ListeningSocket.h ListeningSocket.cpp Packet.h
 	g++ $(CFLAGS) ListeningSocket.cpp -c
+	
+Logger.o: Logger.h Logger.cpp
+	g++ $(CFLAGS) Logger.cpp -c
 	
 PacketFactory.o: PacketFactory.h PacketFactory.cpp \
 						LinkStatePacket.h Utility.h \
