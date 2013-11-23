@@ -46,7 +46,7 @@ using std::chrono::milliseconds;
 const int OWN_LISTEN_PORT = 8888;
 const char* NAME_SERVER_NAME = "cedar.cs.wisc.edu";
 
-unsigned short registerWithNameServer(HostAndPort & self, HostAndPort & masterHap );
+unsigned short registerWithNameServer(HostAndPort & self, HostAndPort & masterHap, Logger & logger );
 unsigned long getOwnWlanIpAddress();
 
 int main(int argc, char** argv){
@@ -62,6 +62,7 @@ int main(int argc, char** argv){
         destPort = atoi(argv[2]);
     }
     */
+    Logger logger("/home/big-buck-node.txt");
     
     while( true ){
         try{ 
@@ -69,7 +70,7 @@ int main(int argc, char** argv){
             HostAndPort masterHap;
 
             logger << "Own Hap: << " << self << endl;
-            unsigned int ownNodeId = registerWithNameServer(self, masterHap);
+            unsigned int ownNodeId = registerWithNameServer(self, masterHap, logger);
             Communicator* communicator = 
                 WifiCommunicator::create( 
                     masterHap.getIPAsStr().c_str(), masterHap.getPort(), OWN_LISTEN_PORT
@@ -103,7 +104,7 @@ int main(int argc, char** argv){
 }
 
 
-unsigned short registerWithNameServer(HostAndPort & self, HostAndPort & masterHap){
+unsigned short registerWithNameServer(HostAndPort & self, HostAndPort & masterHap, Logger & logger){
     // Register with the name server
     unsigned long nameServerIp = getIPAddressForHostname(NAME_SERVER_NAME);
     unsigned short nameServerPort = NAME_SERVER_PORT;
