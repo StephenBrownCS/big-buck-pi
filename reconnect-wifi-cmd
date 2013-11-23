@@ -1,1 +1,2 @@
-sudo wpa_supplicant -i wlan0 -D wext -dt -c /etc/wpa_supplicant/wpa_supplicant.conf
+#!/bin/bash
+wpa_supplicant -i wlan0 -D wext -dt -c /etc/wpa_supplicant/wpa_supplicant.conf
