@@ -66,7 +66,7 @@ int main(int argc, char** argv){
     
     while( true ){
         try{ 
-            HostAndPort self(nthol(getOwnWlanIpAddress()), OWN_LISTEN_PORT);
+            HostAndPort self(ntohl(getOwnWlanIpAddress()), OWN_LISTEN_PORT);
             HostAndPort masterHap;
 
             logger << "Own Hap: << " << self << endl;
