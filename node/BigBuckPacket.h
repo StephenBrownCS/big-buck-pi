@@ -4,7 +4,7 @@
         packetType (1 byte)
         source node Id ( 2 bytes )
         dest node Id (2 bytes)
-        sequence # (8 bytes)
+        sequence # (4 bytes)
         payload length (4 bytes)
         payload (flexible length)
         

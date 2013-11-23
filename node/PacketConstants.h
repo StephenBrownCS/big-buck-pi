@@ -11,6 +11,7 @@ extern const char PKT_LETTER_REGISTRATION;
 extern const char PKT_LETTER_ACK;
 extern const char PKT_LETTER_HEARTBEAT;
 extern const char PKT_LETTER_MASTER;
+extern const char PKT_LETTER_INFO;
 
 const int NAME_SERVER_PORT = 8888;
 

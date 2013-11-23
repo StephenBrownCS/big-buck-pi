@@ -58,6 +58,4 @@ long getIPAddressForHostname(std::string hostName);
 //ipAddress must be in network byte order
 std::string getHostForIPAddress(int ipAddress);
 
-}
-
 #endif

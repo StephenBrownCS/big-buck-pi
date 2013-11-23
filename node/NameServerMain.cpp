@@ -8,6 +8,7 @@
 #include <iostream>
 #include <sstream>
 #include <map>
+#include <cstring>
 #include "ListeningSocket.h"
 #include "SendingSocket.h"
 #include "Packet.h"
@@ -117,6 +118,32 @@ int main(int argc, char** argv){
                     SendingSocket sock(htonl(senderHap.getIP()), senderHap.getPort());
                     BigBuckPacket* responseInnerPkt = BigBuckPacket::create( 
                         'A', DEFAULT_NODE_ID, DEFAULT_NODE_ID, NO_SEQUENCE, NO_PAYLOAD, EMPTY_PAYLOAD );
+                    Packet* responseOuterPkt = UDPPacket::create(
+                        self, senderHap, responseInnerPkt->c_str_length(), responseInnerPkt->c_str());
+                    sock.sendPacket(responseOuterPkt);
+                }
+                else if(innerPkt->getPacketType() == PKT_LETTER_INFO){
+                    cout << "Info Request!" << endl;
+                    cout << "\tNode Id: " << senderId << endl;
+                    cout << "\tNode Hap: " << senderHap << endl;
+                    
+                    // Construct payload full of our own Hap, as well as
+                    // the Haps of all the other nodes
+                    ostringstream oss;
+                    oss << "Own Hap: " << self << endl;
+                    typedef map<unsigned short, HostAndPort>::iterator HapIter;
+                    for( HapIter it = sensorNodes.begin(); it != sensorNodes.end(); ++it){
+                        unsigned short nodeId = it->first;
+                        HostAndPort hap = it->second;
+                        
+                        oss << "Node: " << nodeId << " " << hap << endl;
+                    }
+                    
+                    const char* payload = oss.str().c_str();
+                    
+                    SendingSocket sock(htonl(senderHap.getIP()), senderHap.getPort());
+                    BigBuckPacket* responseInnerPkt = BigBuckPacket::create( 
+                        'A', DEFAULT_NODE_ID, DEFAULT_NODE_ID, NO_SEQUENCE, strlen(payload) + 1, payload );
                     Packet* responseOuterPkt = UDPPacket::create(
                         self, senderHap, responseInnerPkt->c_str_length(), responseInnerPkt->c_str());
                     sock.sendPacket(responseOuterPkt);
