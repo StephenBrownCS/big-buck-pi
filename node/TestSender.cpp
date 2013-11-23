@@ -20,7 +20,9 @@ unsigned short registerWithNameServer(HostAndPort & self, HostAndPort & masterHa
 int main(){
     try{    
         // For testing name server
-        HostAndPort self(getOwnIPAddress(), OWN_LISTEN_PORT);
+        HostAndPort self(ntohl(getOwnIPAddress()), OWN_LISTEN_PORT);
+        cout << self << endl;
+        
         HostAndPort masterHap;
         
         registerWithNameServer(self, masterHap);

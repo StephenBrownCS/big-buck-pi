@@ -66,7 +66,7 @@ int main(int argc, char** argv){
     
     while( true ){
         try{ 
-            HostAndPort self(getOwnWlanIpAddress(), OWN_LISTEN_PORT);
+            HostAndPort self(nthol(getOwnWlanIpAddress()), OWN_LISTEN_PORT);
             HostAndPort masterHap;
 
             logger << "Own Hap: << " << self << endl;
@@ -194,11 +194,13 @@ unsigned long getOwnWlanIpAddress(){
        /* Display interface name and family (including symbolic
           form of the latter for the common families) */
 
+        /*
        printf("%s  address family: %d%s\n",
                ifa->ifa_name, family,
                (family == AF_PACKET) ? " (AF_PACKET)" :
                (family == AF_INET) ?   " (AF_INET)" :
                (family == AF_INET6) ?  " (AF_INET6)" : "");
+        */
 
        /* For an AF_INET* interface address, display the address */
 
@@ -211,7 +213,7 @@ unsigned long getOwnWlanIpAddress(){
                printf("getnameinfo() failed: %s\n", gai_strerror(s));
                exit(EXIT_FAILURE);
            }
-           printf("\taddress: <%s>\n", host);
+           // printf("\taddress: <%s>\n", host);
            if ( strcmp(ifa->ifa_name, "wlan0") == 0  ){
                 freeifaddrs(ifaddr);
 	            return ipAddressStrToLong(host);
