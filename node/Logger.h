@@ -5,16 +5,20 @@
 #include<fstream>
 
 
-class Logger : public std::ostream {
+class Logger : public std::ofstream {
     public:
         Logger(std::string fileName);
         ~Logger();
     
         void log(std::string str);
         
-        std::ostream& operator<< (const std::string & str);
-        
-        std::ostream& operator<< (const char* str);
+    template< typename T >
+    Logger& operator<< (T thing){
+        std::cout << thing;
+        fs << thing;
+        fs.flush();
+        return *this;
+    }
         
     private:
         std::fstream fs;

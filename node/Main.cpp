@@ -70,7 +70,7 @@ int main(int argc, char** argv){
             HostAndPort masterHap;
 
             cout << "Okay" << endl;
-            logger << "Own Hap: " << self << endl;
+            logger << "Own Hap: " << self << "\n";
             unsigned int ownNodeId = registerWithNameServer(self, masterHap, logger);
             Communicator* communicator = 
                 WifiCommunicator::create( 
@@ -96,14 +96,14 @@ int main(int argc, char** argv){
             delete sensingNode;
         }
         catch(Error & e){
-            logger << e.getMsg() << endl;
+            logger << e.getMsg() << "\n";
         }
         catch(SocketTimeoutException & e){
-            logger << "Socket Timeout Exception " << endl;
+            logger << "Socket Timeout Exception " << "\n";
         }
     
         sleep_for(milliseconds( 10000 ));
-        logger << "Retrying" << endl;
+        logger << "Retrying" << "\n";
     }
     return 0;
 }
@@ -114,11 +114,11 @@ unsigned short registerWithNameServer(HostAndPort & self, HostAndPort & masterHa
     unsigned long nameServerIp = getIPAddressForHostname(NAME_SERVER_NAME);
     unsigned short nameServerPort = NAME_SERVER_PORT;
     
-    logger << "Name Server IP: " << convertIntToIPAddressString(nameServerIp) << endl;
+    logger << "Name Server IP: " << convertIntToIPAddressString(nameServerIp) << "\n";
     
     HostAndPort nameServerHap(nameServerIp, nameServerPort);
 
-    logger << nameServerHap << endl;
+    logger << nameServerHap << "\n";
     
     SendingSocket sock(nameServerIp, nameServerPort);
     BigBuckPacket* registrationPkt = 
@@ -138,7 +138,7 @@ unsigned short registerWithNameServer(HostAndPort & self, HostAndPort & masterHa
     delete registrationPkt;
     delete outerPkt;
     
-    logger << "Sent the packet to name server!" << endl;
+    logger << "Sent the packet to name server!" << "\n";
     
     // RECEIVE NODE ID FROM THE REGISTRATION RESPONSE    
     ListeningSocket listenSock( OWN_LISTEN_PORT );
@@ -147,7 +147,7 @@ unsigned short registerWithNameServer(HostAndPort & self, HostAndPort & masterHa
     BigBuckPacket* innerPkt = BigBuckPacket::create(outerPkt->getPayload());
     
     unsigned int ownNodeId = innerPkt->getDestNodeId();
-    logger << "Assigned Node ID: " << ownNodeId << endl;
+    logger << "Assigned Node ID: " << ownNodeId << "\n";
     
     delete outerPkt;
     delete innerPkt;
@@ -160,7 +160,7 @@ unsigned short registerWithNameServer(HostAndPort & self, HostAndPort & masterHa
         if( innerPkt->getPacketType() == PKT_LETTER_MASTER){
             istringstream iss(innerPkt->getPayload());
             iss >> masterHap;
-            logger << "Master Hap: " << masterHap << endl;
+            logger << "Master Hap: " << masterHap << "\n";
             waitingForMasterPacket = false;
         }
         delete outerPkt;

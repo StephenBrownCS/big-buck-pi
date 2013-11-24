@@ -40,7 +40,7 @@ void BigBuckSensingNode::sensingLoop(){
     while( true ){
         currentState = sensor->getCurrentState() * 100;
         if ( currentState != previousState ){
-            logger << "New State: " << currentState << endl;
+            logger << "New State: " << currentState << "\n";
             sendSensorState( currentState );
         }
         previousState = currentState;

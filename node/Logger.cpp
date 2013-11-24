@@ -20,16 +20,3 @@ void Logger::log(string str){
     fs << str << endl;
     fs.flush();
 }
-
-ostream& Logger::operator<< (const string & str){
-    (*this) << str.c_str();
-    return *this;
-}
-
-ostream& Logger::operator<< (const char* str){
-    cout << str;
-    fs << str;
-    fs.flush();
-    return *this;
-}
-
