@@ -8,6 +8,7 @@
 #include "Sensor.h"
 #include "Communicator.h"
 #include "PacketConstants.h"
+#include "Timer.h"
 
 using namespace std;
 
@@ -16,6 +17,7 @@ using std::chrono::milliseconds;
 
 const int BASE_STATION_ID = 7777;
 const int POLLING_RATE = 100; //milliseconds
+const int HELLO_PACKET_TIMEOUT_IN_MILLISECONDS = 15000; // 15 seconds
 
 BigBuckSensingNode* BigBuckSensingNode::create( Logger& logger_, Communicator* communicator_, Sensor* sensor_, short id_ ){
     return new BigBuckSensingNode( logger_, communicator_, sensor_, id_ );
@@ -38,6 +40,9 @@ BigBuckSensingNode::~BigBuckSensingNode(){
 void BigBuckSensingNode::sensingLoop(){
     int currentState = 0;
     int previousState = 0;
+    
+    Timer helloPacketTimeoutTimer;
+    helloPacketTimeoutTimer.startCountdown( HELLO_PACKET_TIMEOUT_IN_MILLISECONDS );
     while( true ){
         if (communicator->isPacketWaiting()){
             logger << "Packet Received!" << endl;
@@ -49,7 +54,17 @@ void BigBuckSensingNode::sensingLoop(){
         if ( currentState != previousState ){
             logger << "New State: " << currentState << "\n";
             sendSensorState( currentState );
+            
+            // Reset the timer, since hello packet is unnecessary if we send sensor state
+            helloPacketTimeoutTimer.startCountdown( HELLO_PACKET_TIMEOUT_IN_MILLISECONDS );
         }
+        
+        if (helloPacketTimeoutTimer.hasExpired()){
+            logger << "Hello timer has expired, sending hello packet." << "\n";
+            sendHelloPacket();
+            helloPacketTimeoutTimer.startCountdown( HELLO_PACKET_TIMEOUT_IN_MILLISECONDS );
+        }
+        
         previousState = currentState;
         sleep_for(milliseconds( POLLING_RATE ));
     }
@@ -64,8 +79,17 @@ void BigBuckSensingNode::sendSensorState( int currentState ){
     delete pkt;
 }
 
+void BigBuckSensingNode::sendHelloPacket(){
+    BigBuckPacket* pkt = BigBuckPacket::create( 'H', id, BASE_STATION_ID, nextSequence++, NO_PAYLOAD, EMPTY_PAYLOAD );
+    communicator->sendPacket( pkt );
+    delete pkt;
+}
+
 void BigBuckSensingNode::handleReceivedPacket(Packet* pkt){
     UDPPacket* udpPkt = dynamic_cast<UDPPacket *>(pkt);
+    
+    // The main thing we're checking for are packets from the name server 
+    // saying that there's a new master in town
     if(udpPkt){
         BigBuckPacket* bigBuckPkt = BigBuckPacket::create(udpPkt->getPayload());
         if(bigBuckPkt->getType() == PKT_LETTER_MASTER){

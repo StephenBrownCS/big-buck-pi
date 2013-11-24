@@ -15,16 +15,23 @@ class BigBuckSensingNode{
 public:
     // Named Constructor
     static BigBuckSensingNode* create( Logger& logger_, Communicator* communicator_, Sensor* sensor_, short id_ );
-    
+    ~BigBuckSensingNode();
+
     void sensingLoop();
     
-    ~BigBuckSensingNode();
 private:
     Communicator* communicator;
     Sensor* sensor;
     Logger& logger;
     short id;
     int nextSequence;
+    
+    // Sends a hello packet to the master, used for when haven't sensed something 
+    // in a while
+    void sendHelloPacket();
+    
+    // For handling packets received from the master or name server
+    void handleReceivedPacket(Packet* pkt);
     
     // Private Ctor, use named constructors instead
     BigBuckSensingNode( Logger & logger, Communicator* communicator_, Sensor* sensor_, short id_ );
