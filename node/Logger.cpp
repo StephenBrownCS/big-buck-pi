@@ -21,13 +21,15 @@ void Logger::log(string str){
     fs.flush();
 }
 
-ofstream& Logger::operator<< (const string & str){
+ostream& Logger::operator<< (const string & str){
     (*this) << str.c_str();
+    return *this;
 }
 
-ofstream& Logger::operator<< (const char* str){
+ostream& Logger::operator<< (const char* str){
     cout << str;
     fs << str;
     fs.flush();
+    return *this;
 }
 

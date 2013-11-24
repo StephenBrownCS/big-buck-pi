@@ -62,14 +62,15 @@ int main(int argc, char** argv){
         destPort = atoi(argv[2]);
     }
     */
-    Logger logger("/home/big-buck-node.txt");
+    Logger logger("/home/pi/big-buck-node.txt");
     
     while( true ){
         try{ 
             HostAndPort self(getOwnWlanIpAddress(), OWN_LISTEN_PORT);
             HostAndPort masterHap;
 
-            logger << "Own Hap: << " << self << endl;
+            cout << "Okay" << endl;
+            logger << "Own Hap: " << self << endl;
             unsigned int ownNodeId = registerWithNameServer(self, masterHap, logger);
             Communicator* communicator = 
                 WifiCommunicator::create( 
