@@ -20,7 +20,15 @@
 
 using namespace std;
 
+// Sends the Host and Port of the Master to the node with the specified id
 void sendMasterHapToNode( HostAndPort & self, HostAndPort & destHap, HostAndPort & masterHap, unsigned short nodeId);
+
+// Acquires the node id for the specified hap. If it is already known, returns 
+// the current id that is stored. Otherwise, assigns it the next available id
+// and returns it.
+int acquireNodeId( unsigned short & nextNodeIdToAssign, 
+    map<HostAndPort, unsigned short> & sensorNodes, 
+    const HostAndPort & hap );
 
 
 int main(int argc, char** argv){
@@ -46,7 +54,7 @@ int main(int argc, char** argv){
     // Always listen on port 8888
     ListeningSocket listenSock( NAME_SERVER_PORT );
 
-    map<unsigned short, HostAndPort> sensorNodes;
+    map<HostAndPort, unsigned short> sensorNodes;
     unsigned short nextNodeIdToAssign = 0;
 
     try{    
@@ -67,11 +75,8 @@ int main(int argc, char** argv){
                 if (innerPkt->getPacketType() == PKT_LETTER_REGISTRATION){
                     cout << "Registration!" << endl;
                     
-                    // Assign it a node Id
-                    unsigned short nodeId = nextNodeIdToAssign++;
-                    sensorNodes[nodeId] = senderHap;
-                    
-                    cout << "Assigned node id of " << nodeId << endl;
+                    unsigned short nodeId = acquireNodeId( nextNodeIdToAssign, sensorNodes, senderHap);
+                    cout << "Node Id is " << nodeId << endl;
                     
                     // Respond with node Id
                     SendingSocket sock(htonl(senderHap.getIP()), senderHap.getPort());
@@ -106,10 +111,10 @@ int main(int argc, char** argv){
 
                     // Contact all of the nodes and inform them of the master's 
                     // location
-                    typedef map<unsigned short, HostAndPort>::iterator HapIter;
+                    typedef map<HostAndPort, unsigned short>::iterator HapIter;
                     for( HapIter it = sensorNodes.begin(); it != sensorNodes.end(); ++it){
-                        unsigned short nodeId = it->first;
-                        HostAndPort hap = it->second;
+                        unsigned short nodeId = it->second;
+                        HostAndPort hap = it->first;
                         
                         sendMasterHapToNode( self, hap, senderHap, nodeId );
                     }
@@ -131,10 +136,10 @@ int main(int argc, char** argv){
                     // the Haps of all the other nodes
                     ostringstream oss;
                     oss << "Own Hap: " << self << endl;
-                    typedef map<unsigned short, HostAndPort>::iterator HapIter;
+                    typedef map<HostAndPort, unsigned short>::iterator HapIter;
                     for( HapIter it = sensorNodes.begin(); it != sensorNodes.end(); ++it){
-                        unsigned short nodeId = it->first;
-                        HostAndPort hap = it->second;
+                        unsigned short nodeId = it->second;
+                        HostAndPort hap = it->first;
                         
                         oss << "Node: " << nodeId << " " << hap << endl;
                     }
@@ -172,5 +177,23 @@ void sendMasterHapToNode( HostAndPort & self, HostAndPort & destHap, HostAndPort
     Packet* responseOuterPkt = UDPPacket::create(
         self, destHap, responseInnerPkt->c_str_length(), responseInnerPkt->c_str());
     sock.sendPacket(responseOuterPkt); 
+}
+
+int acquireNodeId( unsigned short & nextNodeIdToAssign, 
+    map<HostAndPort, unsigned short> & sensorNodes, 
+    const HostAndPort & hap )
+    { 
+    
+    typedef map<HostAndPort, unsigned short>::iterator HapIter;
+    HapIter iter = sensorNodes.find(hap);
+    
+    if ( iter == sensorNodes.end() ){
+        unsigned short nodeId = nextNodeIdToAssign++;
+        sensorNodes[hap] = nodeId;
+        return nodeId;
+    }
+    else{
+        return iter->second;
+    }
 }
 
