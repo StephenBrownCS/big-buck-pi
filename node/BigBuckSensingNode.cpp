@@ -7,6 +7,7 @@
 #include "BigBuckPacket.h"
 #include "Sensor.h"
 #include "Communicator.h"
+#include "PacketConstants.h"
 
 using namespace std;
 
@@ -38,6 +39,12 @@ void BigBuckSensingNode::sensingLoop(){
     int currentState = 0;
     int previousState = 0;
     while( true ){
+        if (communicator->isPacketWaiting()){
+            logger << "Packet Received!" << endl;
+            Packet* pkt = communicator->receivePacket();
+            handleReceivedPacket(pkt);
+        }
+    
         currentState = sensor->getCurrentState() * 100;
         if ( currentState != previousState ){
             logger << "New State: " << currentState << "\n";
@@ -54,6 +61,21 @@ void BigBuckSensingNode::sendSensorState( int currentState ){
     const char* currentStateStr = convert.str().c_str();
     BigBuckPacket* pkt = BigBuckPacket::create( 'S', id, BASE_STATION_ID, nextSequence++, strlen(currentStateStr), currentStateStr );
     communicator->sendPacket( pkt );
+    delete pkt;
+}
+
+void BigBuckSensingNode::handleReceivedPacket(Packet* pkt){
+    UDPPacket* udpPkt = dynamic_cast<UDPPacket *>(pkt);
+    if(udpPkt){
+        BigBuckPacket* bigBuckPkt = BigBuckPacket::create(udpPkt->getPayload());
+        if(bigBuckPkt->getType() == PKT_LETTER_MASTER){
+            logger << "Reset the Master!" << "\n";
+            delete bigBuckPkt;
+            throw MasterResetException();
+        }
+        delete bigBuckPkt;
+    }
+    
     delete pkt;
 }
 

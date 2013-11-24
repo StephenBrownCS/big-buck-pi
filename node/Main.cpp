@@ -101,6 +101,9 @@ int main(int argc, char** argv){
         catch(SocketTimeoutException & e){
             logger << "Socket Timeout Exception " << "\n";
         }
+        catch(MasterResetException & e){
+            logger << "Caught MasterResetException" << "\n";
+        }
     
         sleep_for(milliseconds( 10000 ));
         logger << "Retrying" << "\n";

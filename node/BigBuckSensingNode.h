@@ -7,6 +7,10 @@
 class Communicator;
 class Sensor;
 
+// An exception which gets thrown when the name server notifies this node of a 
+// new master that just connected
+class MasterResetException{};
+
 class BigBuckSensingNode{
 public:
     // Named Constructor
