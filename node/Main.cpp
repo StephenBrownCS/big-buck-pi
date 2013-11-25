@@ -45,9 +45,9 @@ using std::chrono::milliseconds;
 
 const int OWN_LISTEN_PORT = 8888;
 const char* NAME_SERVER_NAME = "cedar.cs.wisc.edu";
-const char* NAME_SERVER_HOTSPOT_STATIC_IP = '111.111.111.111';
+const char* NAME_SERVER_HOTSPOT_STATIC_IP = "111.111.111.111";
 
-unsigned short registerWithNameServer(HostAndPort & self, HostAndPort & masterHap, Logger & logger );
+unsigned short registerWithNameServer(HostAndPort & self, HostAndPort & masterHap, Logger & logger, HostAndPort & nameServerHap unsigned long nameServerIp, unsigned short nameServerPort);
 unsigned long getOwnWlanIpAddress();
 unsigned long getNameServerIP();
 
@@ -85,7 +85,7 @@ int main(int argc, char** argv){
             HostAndPort nameServerHap(nameServerIp, nameServerPort);
             logger << nameServerHap;
             
-            unsigned int ownNodeId = registerWithNameServer(self, masterHap, logger);
+            unsigned int ownNodeId = registerWithNameServer(self, masterHap, logger, nameServerHap, nameServerIp, nameServerPort);
             
             Communicator* communicator = 
                 WifiCommunicator::create( 
@@ -127,7 +127,7 @@ int main(int argc, char** argv){
 }
 
 
-unsigned short registerWithNameServer(HostAndPort & self, HostAndPort & masterHap, Logger & logger, unsigned long nameServerIp, unsigned short nameServerPort){
+unsigned short registerWithNameServer(HostAndPort & self, HostAndPort & masterHap, Logger & logger, HostAndPort & nameServerHap unsigned long nameServerIp, unsigned short nameServerPort){
 
     
     SendingSocket sock(nameServerIp, nameServerPort);
@@ -243,7 +243,7 @@ unsigned long getNameServerIP(){
     counter++;
 
     if( counter % 2 == 0 ){
-        return getIPAddressForHostname(NAME_SERVER_NAME)
+        return getIPAddressForHostname(NAME_SERVER_NAME);
     }
     else{
         return ipAddressStrToLong( NAME_SERVER_HOTSPOT_STATIC_IP );
