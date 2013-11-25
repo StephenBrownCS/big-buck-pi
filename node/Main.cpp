@@ -229,6 +229,8 @@ unsigned long getOwnWlanIpAddress(){
    }
 
    freeifaddrs(ifaddr);
+   
+   throw Error("No wlan0 Address");
    return -1;
 }
 
