@@ -99,10 +99,10 @@ int main(int argc, char** argv){
             logger << e.getMsg() << "\n";
         }
         catch(SocketTimeoutException & e){
-            logger << "Socket Timeout Exception " << "\n";
+            logger << "Socket Timeout Exception ";
         }
         catch(MasterResetException & e){
-            logger << "Caught MasterResetException" << "\n";
+            logger << "Caught MasterResetException";
         }
     
         sleep_for(milliseconds( 10000 ));
@@ -117,11 +117,11 @@ unsigned short registerWithNameServer(HostAndPort & self, HostAndPort & masterHa
     unsigned long nameServerIp = getIPAddressForHostname(NAME_SERVER_NAME);
     unsigned short nameServerPort = NAME_SERVER_PORT;
     
-    logger << "Name Server IP: " << convertIntToIPAddressString(nameServerIp) << "\n";
+    logger << "Name Server IP: " << convertIntToIPAddressString(nameServerIp);
     
     HostAndPort nameServerHap(nameServerIp, nameServerPort);
 
-    logger << nameServerHap << "\n";
+    logger << nameServerHap;
     
     SendingSocket sock(nameServerIp, nameServerPort);
     BigBuckPacket* registrationPkt = 
@@ -141,7 +141,7 @@ unsigned short registerWithNameServer(HostAndPort & self, HostAndPort & masterHa
     delete registrationPkt;
     delete outerPkt;
     
-    logger << "Sent the packet to name server!" << "\n";
+    logger << "Sent the packet to name server!";
     
     // RECEIVE NODE ID FROM THE REGISTRATION RESPONSE    
     ListeningSocket listenSock( OWN_LISTEN_PORT );
@@ -150,7 +150,7 @@ unsigned short registerWithNameServer(HostAndPort & self, HostAndPort & masterHa
     BigBuckPacket* innerPkt = BigBuckPacket::create(outerPkt->getPayload());
     
     unsigned int ownNodeId = innerPkt->getDestNodeId();
-    logger << "Assigned Node ID: " << ownNodeId << "\n";
+    logger << "Assigned Node ID: " << ownNodeId;
     
     delete outerPkt;
     delete innerPkt;
@@ -163,7 +163,7 @@ unsigned short registerWithNameServer(HostAndPort & self, HostAndPort & masterHa
         if( innerPkt->getPacketType() == PKT_LETTER_MASTER){
             istringstream iss(innerPkt->getPayload());
             iss >> masterHap;
-            logger << "Master Hap: " << masterHap << "\n";
+            logger << "Master Hap: " << masterHap;
             waitingForMasterPacket = false;
         }
         delete outerPkt;

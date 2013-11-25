@@ -45,14 +45,14 @@ void BigBuckSensingNode::sensingLoop(){
     helloPacketTimeoutTimer.startCountdown( HELLO_PACKET_TIMEOUT_IN_MILLISECONDS );
     while( true ){
         if (communicator->isPacketWaiting()){
-            logger << "Packet Received!" << endl;
+            logger << "Packet Received!";
             Packet* pkt = communicator->receivePacket();
             handleReceivedPacket(pkt);
         }
     
         currentState = sensor->getCurrentState() * 100;
         if ( currentState != previousState ){
-            logger << "New State: " << currentState << "\n";
+            logger << "New State: " << currentState;
             sendSensorState( currentState );
             
             // Reset the timer, since hello packet is unnecessary if we send sensor state
@@ -60,7 +60,7 @@ void BigBuckSensingNode::sensingLoop(){
         }
         
         if (helloPacketTimeoutTimer.hasExpired()){
-            logger << "Hello timer has expired, sending hello packet." << "\n";
+            logger << "Hello timer has expired, sending hello packet.";
             sendHelloPacket();
             helloPacketTimeoutTimer.startCountdown( HELLO_PACKET_TIMEOUT_IN_MILLISECONDS );
         }
@@ -93,7 +93,7 @@ void BigBuckSensingNode::handleReceivedPacket(Packet* pkt){
     if(udpPkt){
         BigBuckPacket* bigBuckPkt = BigBuckPacket::create(udpPkt->getPayload());
         if(bigBuckPkt->getType() == PKT_LETTER_MASTER){
-            logger << "Reset the Master!" << "\n";
+            logger << "Reset the Master!";
             delete bigBuckPkt;
             throw MasterResetException();
         }
