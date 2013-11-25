@@ -45,7 +45,7 @@ using std::chrono::milliseconds;
 
 const int OWN_LISTEN_PORT = 8888;
 const char* NAME_SERVER_NAME = "cedar.cs.wisc.edu";
-const char* NAME_SERVER_HOTSPOT_STATIC_IP = "111.111.111.111";
+const char* NAME_SERVER_HOTSPOT_STATIC_IP = "10.0.0.2";
 
 unsigned short registerWithNameServer(HostAndPort & self, HostAndPort & masterHap, Logger & logger, HostAndPort & nameServerHap, unsigned long nameServerIp, unsigned short nameServerPort);
 unsigned long getOwnWlanIpAddress();
@@ -246,7 +246,7 @@ unsigned long getNameServerIP(){
         return getIPAddressForHostname(NAME_SERVER_NAME);
     }
     else{
-        return ipAddressStrToLong( NAME_SERVER_HOTSPOT_STATIC_IP );
+        return ntohl(ipAddressStrToLong( NAME_SERVER_HOTSPOT_STATIC_IP ));
     }
 }
 
