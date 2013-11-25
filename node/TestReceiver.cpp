@@ -54,8 +54,9 @@ int main(){
         while( true ){
             if (listenSock.isPacketWaiting() ){
                 UDPPacket* pkt = listenSock.receivePacket();
+                cout << getCurrentHumanReadableTime();
                 cout << "Received!" << endl;
-                pkt->print();
+                // pkt->print();
                 Packet* bigBuckPkt = BigBuckPacket::create(pkt->getPayload());
                 bigBuckPkt->print();
             }

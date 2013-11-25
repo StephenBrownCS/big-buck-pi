@@ -3,19 +3,21 @@
 #define LOGGER_H_
 
 #include<fstream>
+#include<ctime>
 
 
 class Logger : public std::ofstream {
     public:
         Logger(std::string fileName);
         ~Logger();
-    
-        void log(std::string str);
-        
+                
     template< typename T >
     Logger& operator<< (T thing){
-        std::cout << thing;
-        fs << thing;
+        time_t now;
+        time(&now);
+    
+        std::cout << "\n" << ctime(&now) << "\t" << thing << " ";
+        fs << "\n" << ctime(&now)  << "\t" << thing << " ";
         fs.flush();
         return *this;
     }

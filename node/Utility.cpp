@@ -20,6 +20,7 @@
 #include <netdb.h>
 #include <sys/timeb.h>
 #include <unistd.h>
+#include <ctime>
 
 #include "Utility.h"
 
@@ -147,5 +148,12 @@ int getMilliSpan(int start){
     if(nSpan < 0)
         nSpan += 0x100000 * 1000;
     return nSpan;
+}
+
+const char* getCurrentHumanReadableTime(){
+  time_t now;
+  time(&now);
+ 
+  return ctime(&now);
 }
 

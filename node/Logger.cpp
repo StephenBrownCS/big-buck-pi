@@ -1,5 +1,7 @@
 #include <iostream>
+#include <ctime>
 #include "Logger.h"
+
 
 using namespace std;
 
@@ -11,12 +13,6 @@ Logger::Logger(string fileName){
 }
 
 Logger::~Logger(){
-    cout << "Close " << endl;
+    cout << "Close the Logger" << endl;
     fs.close();
-}
-
-void Logger::log(string str){
-    cout << str << endl;
-    fs << str << endl;
-    fs.flush();
 }
