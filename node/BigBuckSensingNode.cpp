@@ -7,6 +7,8 @@
 #include "BigBuckPacket.h"
 #include "Sensor.h"
 #include "Communicator.h"
+#include "Packet.h"
+#include "UDPPacket.h"
 #include "PacketConstants.h"
 #include "Timer.h"
 
@@ -92,7 +94,7 @@ void BigBuckSensingNode::handleReceivedPacket(Packet* pkt){
     // saying that there's a new master in town
     if(udpPkt){
         BigBuckPacket* bigBuckPkt = BigBuckPacket::create(udpPkt->getPayload());
-        if(bigBuckPkt->getType() == PKT_LETTER_MASTER){
+        if(bigBuckPkt->getPacketType() == PKT_LETTER_MASTER){
             logger << "Reset the Master!";
             delete bigBuckPkt;
             throw MasterResetException();
