@@ -6,6 +6,7 @@
 //Forward References
 class Communicator;
 class Sensor;
+class Packet;
 
 // An exception which gets thrown when the name server notifies this node of a 
 // new master that just connected

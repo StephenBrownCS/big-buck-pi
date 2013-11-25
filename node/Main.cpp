@@ -62,7 +62,7 @@ int main(int argc, char** argv){
         destPort = atoi(argv[2]);
     }
     */
-    Logger logger("/home/pi/big-buck-node.txt");
+    Logger logger("/home/pi/" + getCurrentHumanReadableTime() + "-big-buck-node.txt");
     
     while( true ){
         try{ 
