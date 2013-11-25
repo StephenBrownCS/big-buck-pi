@@ -128,7 +128,7 @@ test-sender:
                     -o sender	     
                     
 name-server: NameServerMain.cpp Packet.cpp SendingSocket.cpp ListeningSocket.cpp UDPPacket.cpp BigBuckPacket.cpp HostAndPort.cpp Utility.cpp PacketConstants.cpp Packet.h SendingSocket.h ListeningSocket.h UDPPacket.h BigBuckPacket.h HostAndPort.h Utility.h PacketConstants.h
-	g++ -g -std=c++0x NameServerMain.cpp Packet.cpp SendingSocket.cpp ListeningSocket.cpp \
+	g++ -g NameServerMain.cpp Packet.cpp SendingSocket.cpp ListeningSocket.cpp \
                     UDPPacket.cpp BigBuckPacket.cpp \
                     HostAndPort.cpp Utility.cpp PacketConstants.cpp \
                     -o name-server	     
