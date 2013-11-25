@@ -62,8 +62,8 @@ void BigBuckSensingNode::sensingLoop(){
         }
         
         if (helloPacketTimeoutTimer.hasExpired()){
-            logger << "Hello timer has expired, sending hello packet.";
-            sendHelloPacket();
+            logger << "Hello timer has expired, sending current state again.";
+            sendSensorState( currentState );
             helloPacketTimeoutTimer.startCountdown( HELLO_PACKET_TIMEOUT_IN_MILLISECONDS );
         }
         
