@@ -45,9 +45,11 @@ using std::chrono::milliseconds;
 
 const int OWN_LISTEN_PORT = 8888;
 const char* NAME_SERVER_NAME = "cedar.cs.wisc.edu";
+const char* NAME_SERVER_HOTSPOT_STATIC_IP = '111.111.111.111';
 
 unsigned short registerWithNameServer(HostAndPort & self, HostAndPort & masterHap, Logger & logger );
 unsigned long getOwnWlanIpAddress();
+unsigned long getNameServerIP();
 
 int main(int argc, char** argv){
     const char* destIpAddress = 0;
@@ -74,7 +76,17 @@ int main(int argc, char** argv){
 
             cout << "Okay" << endl;
             logger << "Own Hap: " << self << "\n";
+                        
+            // Register with the name server
+            unsigned long nameServerIp = getNameServerIP();
+            unsigned short nameServerPort = NAME_SERVER_PORT;
+            logger << "Name Server IP: " << convertIntToIPAddressString(nameServerIp);
+    
+            HostAndPort nameServerHap(nameServerIp, nameServerPort);
+            logger << nameServerHap;
+            
             unsigned int ownNodeId = registerWithNameServer(self, masterHap, logger);
+            
             Communicator* communicator = 
                 WifiCommunicator::create( 
                     masterHap.getIPAsStr().c_str(), masterHap.getPort(), OWN_LISTEN_PORT
@@ -115,16 +127,8 @@ int main(int argc, char** argv){
 }
 
 
-unsigned short registerWithNameServer(HostAndPort & self, HostAndPort & masterHap, Logger & logger){
-    // Register with the name server
-    unsigned long nameServerIp = getIPAddressForHostname(NAME_SERVER_NAME);
-    unsigned short nameServerPort = NAME_SERVER_PORT;
-    
-    logger << "Name Server IP: " << convertIntToIPAddressString(nameServerIp);
-    
-    HostAndPort nameServerHap(nameServerIp, nameServerPort);
+unsigned short registerWithNameServer(HostAndPort & self, HostAndPort & masterHap, Logger & logger, unsigned long nameServerIp, unsigned short nameServerPort){
 
-    logger << nameServerHap;
     
     SendingSocket sock(nameServerIp, nameServerPort);
     BigBuckPacket* registrationPkt = 
@@ -232,6 +236,18 @@ unsigned long getOwnWlanIpAddress(){
    
    throw Error("No wlan0 Address");
    return -1;
+}
+
+unsigned long getNameServerIP(){
+    static int counter = 0;
+    counter++;
+
+    if( counter % 2 == 0 ){
+        return getIPAddressForHostname(NAME_SERVER_NAME)
+    }
+    else{
+        return ipAddressStrToLong( NAME_SERVER_HOTSPOT_STATIC_IP );
+    }
 }
 
 
