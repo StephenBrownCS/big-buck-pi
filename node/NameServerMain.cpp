@@ -9,6 +9,8 @@
 #include <sstream>
 #include <map>
 #include <cstring>
+#include <chrono>
+#include <thread>
 #include "ListeningSocket.h"
 #include "SendingSocket.h"
 #include "Packet.h"
@@ -19,6 +21,10 @@
 #include "PacketConstants.h"
 
 using namespace std;
+using std::this_thread::sleep_for;
+using std::chrono::milliseconds;
+
+const int POLLING_RATE = 100; //milliseconds
 
 // Sends the Host and Port of the Master to the node with the specified id
 void sendMasterHapToNode( HostAndPort & self, HostAndPort & destHap, HostAndPort & masterHap, unsigned short nodeId);
@@ -154,6 +160,9 @@ int main(int argc, char** argv){
                     sock.sendPacket(responseOuterPkt);
                 }
             }
+        
+        sleep_for(milliseconds( POLLING_RATE ));
+
         }
     }
     catch(Error & e){
