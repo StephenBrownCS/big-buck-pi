@@ -62,7 +62,10 @@ int main(int argc, char** argv){
         destPort = atoi(argv[2]);
     }
     */
-    Logger logger("/home/pi/" + getCurrentHumanReadableTime() + "-big-buck-node.txt");
+    string curTime = string(getCurrentHumanReadableTime());
+    // Trim off the newline character
+    curTime = curTime.substr(0, curTime.length() - 1);
+    Logger logger(string("/home/pi/big-buck-node-") + curTime + string(".txt"));
     
     while( true ){
         try{ 
