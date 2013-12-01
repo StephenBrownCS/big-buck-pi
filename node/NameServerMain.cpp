@@ -48,7 +48,7 @@ int main(int argc, char** argv){
     }
     */
     
-    HostAndPort self(htonl(getOwnIPAddress()), NAME_SERVER_PORT);
+    HostAndPort self(getOwnWlanIpAddress(), NAME_SERVER_PORT);
     HostAndPort masterHap;
     bool masterIsKnown = false;
     
