@@ -24,8 +24,6 @@
 #include <unistd.h>
 #include <chrono>
 #include <thread>
-#include <netpacket/packet.h>
-#include <net/ethernet.h>
 #include "SendingSocket.h"
 #include "Packet.h"
 #include "UDPPacket.h"
@@ -48,7 +46,6 @@ const char* NAME_SERVER_NAME = "cedar.cs.wisc.edu";
 const char* NAME_SERVER_HOTSPOT_STATIC_IP = "10.0.0.2";
 
 unsigned short registerWithNameServer(HostAndPort & self, HostAndPort & masterHap, Logger & logger, HostAndPort & nameServerHap, unsigned long nameServerIp, unsigned short nameServerPort);
-unsigned long getOwnWlanIpAddress();
 unsigned long getNameServerIP();
 
 int main(int argc, char** argv){
@@ -180,62 +177,6 @@ unsigned short registerWithNameServer(HostAndPort & self, HostAndPort & masterHa
     listenSock.closeSocket();
     
     return ownNodeId;   
-}
-
-unsigned long getOwnWlanIpAddress(){
-    struct ifaddrs *ifaddr, *ifa;
-   int family = 0;
-   int s = 0;
-   char host[NI_MAXHOST];
-
-   if (getifaddrs(&ifaddr) == -1) {
-       perror("getifaddrs");
-       exit(EXIT_FAILURE);
-   }
-
-   /* Walk through linked list, maintaining head pointer so we
-      can free list later */
-
-   for (ifa = ifaddr; ifa != NULL; ifa = ifa->ifa_next) {
-       if (ifa->ifa_addr == NULL)
-           continue;
-
-       family = ifa->ifa_addr->sa_family;
-
-       /* Display interface name and family (including symbolic
-          form of the latter for the common families) */
-
-        /*
-       printf("%s  address family: %d%s\n",
-               ifa->ifa_name, family,
-               (family == AF_PACKET) ? " (AF_PACKET)" :
-               (family == AF_INET) ?   " (AF_INET)" :
-               (family == AF_INET6) ?  " (AF_INET6)" : "");
-        */
-
-       /* For an AF_INET* interface address, display the address */
-
-       if (family == AF_INET || family == AF_INET6) {
-           s = getnameinfo(ifa->ifa_addr,
-                   (family == AF_INET) ? sizeof(struct sockaddr_in) :
-                                         sizeof(struct sockaddr_in6),
-                   host, NI_MAXHOST, NULL, 0, NI_NUMERICHOST);
-           if (s != 0) {
-               printf("getnameinfo() failed: %s\n", gai_strerror(s));
-               exit(EXIT_FAILURE);
-           }
-           // printf("\taddress: <%s>\n", host);
-           if ( strcmp(ifa->ifa_name, "wlan0") == 0  ){
-                freeifaddrs(ifaddr);
-	            return ipAddressStrToLong(host);
-           } 
-       }
-   }
-
-   freeifaddrs(ifaddr);
-   
-   throw Error("No wlan0 Address");
-   return -1;
 }
 
 unsigned long getNameServerIP(){

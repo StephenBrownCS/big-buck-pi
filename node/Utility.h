@@ -50,6 +50,9 @@ std::string getOwnHostName();
 // in network-byte order. To convert, use ntohl()
 int getOwnIPAddress();
 
+// Gets the IP Address used by the Wlan interface
+unsigned long getOwnWlanIpAddress();
+
 // Returns ip address of host in network-byte order.
 // To convert, use ntohl()
 long getIPAddressForHostname(std::string hostName);
