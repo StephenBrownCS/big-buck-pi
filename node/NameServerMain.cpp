@@ -68,7 +68,7 @@ int main(int argc, char** argv){
     ListeningSocket listenSock( NAME_SERVER_PORT );
 
     map<HostAndPort, unsigned short> sensorNodes;
-    unsigned short nextNodeIdToAssign = 0;
+    unsigned short nextNodeIdToAssign = 1;
 
     try{    
         //loop to receive and forward packets
