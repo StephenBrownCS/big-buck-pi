@@ -35,42 +35,43 @@ int acquireNodeId( unsigned short & nextNodeIdToAssign,
 
 
 int main(int argc, char** argv){
-    const char* destIpAddress = 0;
-    unsigned short destPort = 0;
-    /*
-    if ( argc != 3 ){
-        cout << "Usage: Main <Dot-Separated IP Address> <port>" << endl;
-        exit( 0 );
-    }
-    else{
-        destIpAddress = argv[1];
-        destPort = atoi(argv[2]);
-    }
-    */
-    
-    // This is kind of hacky - but we identify if we're a dns-finable host (such as 
-    // cedar.cs.wisc.edu) by asking getOwnHostName(). Otherwise, fall back to 
-    // our wlan0 address.
-    unsigned long ownIPAddress = 0;
-    if (getOwnHostName() != "localhost"){
-        ownIPAddress = htonl(getOwnIPAddress());
-    }
-    else{
-        ownIPAddress = getOwnWlanIpAddress();
-    }
-    HostAndPort self(ownIPAddress, NAME_SERVER_PORT);
-    HostAndPort masterHap;
-    bool masterIsKnown = false;
-    
-    cout << "Own Hap: " << self << endl;
-    
-    // Always listen on port 8888
-    ListeningSocket listenSock( NAME_SERVER_PORT );
-
-    map<HostAndPort, unsigned short> sensorNodes;
-    unsigned short nextNodeIdToAssign = 1;
-
     try{    
+        const char* destIpAddress = 0;
+        unsigned short destPort = 0;
+        /*
+        if ( argc != 3 ){
+            cout << "Usage: Main <Dot-Separated IP Address> <port>" << endl;
+            exit( 0 );
+        }
+        else{
+            destIpAddress = argv[1];
+            destPort = atoi(argv[2]);
+        }
+        */
+    
+        // This is kind of hacky - but we identify if we're a dns-finable host (such as 
+        // cedar.cs.wisc.edu) by asking getOwnHostName(). Otherwise, fall back to 
+        // our wlan0 address.
+        unsigned long ownIPAddress = 0;
+        if (getOwnHostName() == "cedar"){
+            ownIPAddress = htonl(getOwnIPAddress());
+        }
+        else{
+            ownIPAddress = getOwnWlanIpAddress();
+        }
+        HostAndPort self(ownIPAddress, NAME_SERVER_PORT);
+        HostAndPort masterHap;
+        bool masterIsKnown = false;
+    
+        cout << "Own Hap: " << self << endl;
+    
+        // Always listen on port 8888
+        ListeningSocket listenSock( NAME_SERVER_PORT );
+
+        map<HostAndPort, unsigned short> sensorNodes;
+        unsigned short nextNodeIdToAssign = 1;
+    
+    
         //loop to receive and forward packets
         while(1){
             // SEE IF PACKET IS AVAILABLE
@@ -173,8 +174,8 @@ int main(int argc, char** argv){
     }
     catch(Error & e){
         cout << e.getMsg() << endl;
+        //listenSock.closeSocket();
     }
-    listenSock.closeSocket();
     return 0;
 }
 
