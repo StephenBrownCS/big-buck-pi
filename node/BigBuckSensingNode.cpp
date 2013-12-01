@@ -48,7 +48,7 @@ void BigBuckSensingNode::sensingLoop(){
     while( true ){
         if (communicator->isPacketWaiting()){
             logger << "Packet Received!";
-            Packet* pkt = communicator->receivePacket();
+            UDPPacket* pkt = communicator->receivePacket();
             handleReceivedPacket(pkt);
         }
     
@@ -87,20 +87,16 @@ void BigBuckSensingNode::sendHelloPacket(){
     delete pkt;
 }
 
-void BigBuckSensingNode::handleReceivedPacket(Packet* pkt){
-    UDPPacket* udpPkt = dynamic_cast<UDPPacket *>(pkt);
-    
+void BigBuckSensingNode::handleReceivedPacket(UDPPacket* udpPkt){
     // The main thing we're checking for are packets from the name server 
     // saying that there's a new master in town
-    if(udpPkt){
-        BigBuckPacket* bigBuckPkt = BigBuckPacket::create(udpPkt->getPayload());
-        if(bigBuckPkt->getPacketType() == PKT_LETTER_MASTER){
-            logger << "Reset the Master!";
-            delete bigBuckPkt;
-            throw MasterResetException();
-        }
+    BigBuckPacket* bigBuckPkt = BigBuckPacket::create(udpPkt->getPayload());
+    if(bigBuckPkt->getPacketType() == PKT_LETTER_MASTER){
+        logger << "Reset the Master!";
         delete bigBuckPkt;
+        throw MasterResetException();
     }
+    delete bigBuckPkt;
     
     delete pkt;
 }

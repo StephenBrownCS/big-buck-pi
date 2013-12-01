@@ -13,7 +13,7 @@ WifiCommunicator*  WifiCommunicator::create( const char* baseIPAddress_, const i
 WifiCommunicator::WifiCommunicator( const char* baseIPAddress_, const int basePort_, const int ownPort_ ){
     baseHap.setIP(ipAddressStrToLong( baseIPAddress_ ) );
     baseHap.setPort( basePort_ );
-    ownHap.setIP( (unsigned int) getOwnIPAddress() );
+    ownHap.setIP( (unsigned int) getOwnWlanIpAddress() );
     ownHap.setPort( ownPort_ );
 
     cout << "self: " << ownHap << endl;
@@ -35,6 +35,6 @@ bool WifiCommunicator::isPacketWaiting(){
     return listenSock->isPacketWaiting();
 }
 
-Packet* WifiCommunicator::receivePacket(){
+UDPPacket* WifiCommunicator::receivePacket(){
     return listenSock->receivePacket();
 }

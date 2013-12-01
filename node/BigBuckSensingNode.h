@@ -7,6 +7,7 @@
 class Communicator;
 class Sensor;
 class Packet;
+class UDPPacket;
 
 // An exception which gets thrown when the name server notifies this node of a 
 // new master that just connected
@@ -32,7 +33,7 @@ private:
     void sendHelloPacket();
     
     // For handling packets received from the master or name server
-    void handleReceivedPacket(Packet* pkt);
+    void handleReceivedPacket(UDPPacket* udpPkt);
     
     // Private Ctor, use named constructors instead
     BigBuckSensingNode( Logger & logger, Communicator* communicator_, Sensor* sensor_, short id_ );
