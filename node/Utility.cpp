@@ -22,7 +22,10 @@
 #include <sys/timeb.h>
 #include <unistd.h>
 #include <ctime>
+
+#ifndef __APPLE__
 #include <netpacket/packet.h>
+#endif
 #include <net/ethernet.h>
 #include <ifaddrs.h>
 #include "Utility.h"
