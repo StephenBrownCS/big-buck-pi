@@ -28,7 +28,7 @@ WifiCommunicator::~WifiCommunicator(){
 }
 
 void WifiCommunicator::sendPacket( Packet* pkt ){
-    sendSock->sendPacket( UDPPacket::create( ownHap, ntohl(baseHap), pkt->c_str_length(), pkt->c_str() ) );
+    sendSock->sendPacket( UDPPacket::create( ownHap, baseHap, pkt->c_str_length(), pkt->c_str() ) );
 }
 
 bool WifiCommunicator::isPacketWaiting(){
