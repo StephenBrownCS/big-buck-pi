@@ -48,7 +48,17 @@ int main(int argc, char** argv){
     }
     */
     
-    HostAndPort self(getOwnWlanIpAddress(), NAME_SERVER_PORT);
+    // This is kind of hacky - but we identify if we're a dns-finable host (such as 
+    // cedar.cs.wisc.edu) by asking getOwnHostName(). Otherwise, fall back to 
+    // our wlan0 address.
+    unsigned long ownIPAddress = 0;
+    if (getOwnHostName() != "localhost"){
+        ownIPAddress = htonl(getOwnIPAddress());
+    }
+    else{
+        ownIPAddress = getOwnWlanIpAddress();
+    }
+    HostAndPort self(ownIPAddress, NAME_SERVER_PORT);
     HostAndPort masterHap;
     bool masterIsKnown = false;
     
