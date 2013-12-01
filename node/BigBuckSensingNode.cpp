@@ -48,8 +48,12 @@ void BigBuckSensingNode::sensingLoop(){
     while( true ){
         if (communicator->isPacketWaiting()){
             logger << "Packet Received!";
-            UDPPacket* pkt = communicator->receivePacket();
-            handleReceivedPacket(pkt);
+            Packet* pkt = communicator->receivePacket();
+            UDPPacket* udpPkt = dynamic_cast<UDPPacket *>( pkt );
+            if ( udpPkt ){
+                handleReceivedPacket(udpPkt);
+            }
+            delete pkt;
         }
     
         currentState = sensor->getCurrentState() * 100;
@@ -96,8 +100,6 @@ void BigBuckSensingNode::handleReceivedPacket(UDPPacket* udpPkt){
         delete bigBuckPkt;
         throw MasterResetException();
     }
-    delete bigBuckPkt;
-    
-    delete pkt;
+    delete bigBuckPkt;    
 }
 

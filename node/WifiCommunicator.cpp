@@ -35,6 +35,6 @@ bool WifiCommunicator::isPacketWaiting(){
     return listenSock->isPacketWaiting();
 }
 
-UDPPacket* WifiCommunicator::receivePacket(){
+Packet* WifiCommunicator::receivePacket(){
     return listenSock->receivePacket();
 }

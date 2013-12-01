@@ -31,7 +31,7 @@ public:
     
     void sendPacket( Packet* pkt );
     bool isPacketWaiting();
-    UDPPacket* receivePacket();
+    Packet* receivePacket();
 
 private:
     WifiCommunicator( const char* baseIPAddress_, const int basePort_, const int ownPort_ );
