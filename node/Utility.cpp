@@ -10,6 +10,7 @@
 
 #include <cmath>
 #include <stdlib.h>
+#include <cstring>
 #include <string>
 #include <sys/types.h>
 #include <netinet/in.h>
@@ -23,7 +24,7 @@
 #include <ctime>
 #include <netpacket/packet.h>
 #include <net/ethernet.h>
-
+#include <ifaddrs.h>
 #include "Utility.h"
 
 using namespace std;
