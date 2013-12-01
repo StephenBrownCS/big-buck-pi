@@ -125,7 +125,13 @@ test-sender:
 	g++ -g TestSender.cpp Packet.cpp SendingSocket.cpp ListeningSocket.cpp \
                     UDPPacket.cpp BigBuckPacket.cpp \
                     HostAndPort.cpp Utility.cpp PacketConstants.cpp \
-                    -o sender	     
+                    -o sender	
+                    
+test-info:  
+	g++ -g TestInfo.cpp Packet.cpp SendingSocket.cpp ListeningSocket.cpp \
+                    UDPPacket.cpp BigBuckPacket.cpp \
+                    HostAndPort.cpp Utility.cpp PacketConstants.cpp \
+                    -o info   
                     
 name-server: NameServerMain.cpp Packet.cpp SendingSocket.cpp ListeningSocket.cpp UDPPacket.cpp BigBuckPacket.cpp HostAndPort.cpp Utility.cpp PacketConstants.cpp Packet.h SendingSocket.h ListeningSocket.h UDPPacket.h BigBuckPacket.h HostAndPort.h Utility.h PacketConstants.h
 	g++ -g NameServerMain.cpp Packet.cpp SendingSocket.cpp ListeningSocket.cpp \
