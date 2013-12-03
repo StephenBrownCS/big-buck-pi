@@ -19,7 +19,7 @@ BIG_BUCK_NODE_OBJECTS = Packet.o UDPPacket.o BigBuckPacket.o SendingSocket.o Lis
                    LinkStatePacket.o \
                    HostAndPort.o Timer.o \
                    PIRSensor.o WifiCommunicator.o BigBuckSensingNode.o \
-                   Main.o Logger.o
+                   Main.o Logger.o RFRadio.o
 
 
 #all: This the old make all
@@ -97,6 +97,8 @@ PacketFactory.o: PacketFactory.h PacketFactory.cpp \
 Timer.o: Timer.h Timer.cpp Utility.h
 	g++ $(CFLAGS) Timer.cpp -c
 	
+RFRadio.o: RFRadio.h RFRadio.cpp
+	g++ $(CFLAGS) RFRadio.cpp -c
 	
 debug:
 	g++ $(CFLAGS) TestReceiver.cpp Packet.cpp SendingSocket.cpp ListeningSocket.cpp \
