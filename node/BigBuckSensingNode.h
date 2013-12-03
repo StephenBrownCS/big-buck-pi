@@ -8,6 +8,7 @@ class Communicator;
 class Sensor;
 class Packet;
 class UDPPacket;
+class RFRadio;
 
 // An exception which gets thrown when the name server notifies this node of a 
 // new master that just connected
@@ -21,12 +22,17 @@ public:
 
     void sensingLoop();
     
+    void turnWifiRadioOn();
+    void turnWifiRadioOff();
+    
 private:
     Communicator* communicator;
     Sensor* sensor;
     Logger& logger;
     short id;
     int nextSequence;
+    bool wifiRadioIsOn;
+    RFRadio* rfRadio;
     
     // Sends a hello packet to the master, used for when haven't sensed something 
     // in a while
