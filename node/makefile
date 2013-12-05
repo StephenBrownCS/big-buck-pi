@@ -46,7 +46,7 @@ Main.o: Main.cpp Packet.h UDPPacket.h BigBuckPacket.h  PacketConstants.h\
 	g++ $(CFLAGS) Main.cpp -c
 
 BigBuckSensingNode.o: BigBuckSensingNode.cpp BigBuckSensingNode.h \
-		Sensor.h Communicator.h BigBuckPacket.o
+		Sensor.h Communicator.h RFRadio.h BigBuckPacket.o 
 	g++ $(CFLAGS) BigBuckSensingNode.cpp -c
 	
 WifiCommunicator.o: WifiCommunicator.cpp WifiCommunicator.h Communicator.h \
