@@ -87,7 +87,7 @@ ListeningSocket.o: ListeningSocket.h ListeningSocket.cpp Packet.h
 	g++ $(CFLAGS) ListeningSocket.cpp -c
 	
 Logger.o: Logger.h Logger.cpp
-	g++ $(CFLAGS) gnublin.a Logger.cpp -c $(LDFLAGS)
+	g++ $(CFLAGS) Logger.cpp -c
 	
 PacketFactory.o: PacketFactory.h PacketFactory.cpp \
 						LinkStatePacket.h Utility.h \
@@ -98,7 +98,7 @@ Timer.o: Timer.h Timer.cpp Utility.h
 	g++ $(CFLAGS) Timer.cpp -c
 	
 RFRadio.o: RFRadio.h RFRadio.cpp
-	g++ $(CFLAGS) RFRadio.cpp -c
+	g++ $(CFLAGS) gnublin.a RFRadio.cpp -c $(LDFLAGS)
 	
 debug:
 	g++ $(CFLAGS) TestReceiver.cpp Packet.cpp SendingSocket.cpp ListeningSocket.cpp \
