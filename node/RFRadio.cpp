@@ -38,8 +38,6 @@ RFRadio::RFRadio(){
     pthread_t pulseMonitoringThread;
     ret = pthread_create(&pulseMonitoringThread, NULL, 
                            RFRadio::monitorForPulses, (void *) this);
-    int ret = pthread_create(&chunkFetcherThread, NULL, 
-                            ChunkFetcher::fetchChunks, (void *) chunkFetcher);
                            
 
     if ( ret < 0 ){
@@ -70,7 +68,8 @@ bool RFRadio::pulseDetected(){
     return result;
 }
 
-void RFRadio::monitorForPulses(RFRadio* radio){
+void RFRadio::monitorForPulses(void* radio){
+    RFRadio* rfRadio = static_cast<RFRadio* >(radio);
     while( true ){
         // TODO
         sleep_for(milliseconds( PULSE_SAMPLING_INTERVAL ));
