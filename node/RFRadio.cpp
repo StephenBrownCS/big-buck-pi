@@ -1,5 +1,5 @@
 #include <pthread.h>
-#include "RFRadio.cpp"
+#include "RFRadio.h"
 
 #define BOARD RASPBERRY_PI
 #include "gnublin.h"
