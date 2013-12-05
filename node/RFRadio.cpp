@@ -48,13 +48,13 @@ void RFRadio::sendPulse(){
 
 bool RFRadio::pulseDetected(){
     bool result;
-    int ret = pthread_mutex_lock(queueLock);
+    int ret = pthread_mutex_lock(pulseFlagLock);
     if( ret < 0){
         throw new Error( "Could not lock pulse detected recently lock!" );
     }
     result = pulseDetectedRecently;
     
-    ret = pthread_mutex_unlock(queueLock);
+    ret = pthread_mutex_unlock(pulseFlagLock);
     if( ret < 0){
         throw new Error( "Could not unlock queue lock!" );
     }
