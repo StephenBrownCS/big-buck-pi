@@ -3,7 +3,7 @@
 
 #define BOARD RASPBERRY_PI
 #include "gnublin.h"
-#include "Error.h"
+#include "Utility.h"
 
 const int PULSE_SAMPLING_INTERVAL_IN_SECONDS = 1;
 
