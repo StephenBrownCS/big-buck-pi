@@ -1,4 +1,5 @@
 #include <pthread.h>
+#include <threads.h>
 #include "RFRadio.h"
 
 #define BOARD RASPBERRY_PI
@@ -33,6 +34,10 @@ RFRadio::RFRadio(){
     pthread_t pulseMonitoringThread;
     ret = pthread_create(&pulseMonitoringThread, NULL, 
                            RFRadio::monitorForPulses, (void *) this);
+    int ret = pthread_create(&chunkFetcherThread, NULL, 
+                            ChunkFetcher::fetchChunks, (void *) chunkFetcher);
+                           
+
     if ( ret < 0 ){
         throw new Error("Pulse monitoring thread failed to get created");
     }
@@ -61,7 +66,7 @@ bool RFRadio::pulseDetected(){
     return result;
 }
 
-void RFRadio::monitorForPulses(){
+void RFRadio::monitorForPulses(RFRadio* radio){
     while( true ){
         // TODO
         thread_sleep( PULSE_SAMPLING_INTERVAL_IN_SECONDS );

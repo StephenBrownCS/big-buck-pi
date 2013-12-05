@@ -10,7 +10,7 @@ public:
     ~RFRadio();
     void sendPulse();
     bool pulseDetected();
-    void monitorForPulses();
+    static void monitorForPulses(RFRadio* radio);
 private:
     gnublin_gpio* gpio;
     bool pulseDetectedRecently;
