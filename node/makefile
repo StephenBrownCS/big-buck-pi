@@ -87,7 +87,7 @@ ListeningSocket.o: ListeningSocket.h ListeningSocket.cpp Packet.h
 	g++ $(CFLAGS) ListeningSocket.cpp -c
 	
 Logger.o: Logger.h Logger.cpp
-	g++ $(CFLAGS) Logger.cpp -c
+	g++ $(CFLAGS) gnublin.a Logger.cpp -c $(LDFLAGS)
 	
 PacketFactory.o: PacketFactory.h PacketFactory.cpp \
 						LinkStatePacket.h Utility.h \
