@@ -67,8 +67,8 @@ void BigBuckSensingNode::sensingLoop(){
             delete pkt;
         }
         
-        if( rfRadio.pulseDetected() ){
-            rfRadio.sendPulse();
+        if( rfRadio->pulseDetected() ){
+            rfRadio->endPulse();
             if ( !wifiRadioIsOn ){
                 turnWifiRadioOn();
             }
@@ -106,7 +106,7 @@ void BigBuckSensingNode::sensingLoop(){
 void BigBuckSensingNode::sendSensorState( int currentState ){
 
     if ( currentState ){
-        rfRadio.sendPulse();
+        rfRadio->sendPulse();
     }
 
     if ( ! wifiRadioIsOn ){
