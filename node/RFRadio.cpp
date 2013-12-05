@@ -68,12 +68,13 @@ bool RFRadio::pulseDetected(){
     return result;
 }
 
-void RFRadio::monitorForPulses(void* radio){
+void* RFRadio::monitorForPulses(void* radio){
     RFRadio* rfRadio = static_cast<RFRadio* >(radio);
     while( true ){
         // TODO
         sleep_for(milliseconds( PULSE_SAMPLING_INTERVAL ));
     }
+    return 0;
 }
 
 
