@@ -32,7 +32,7 @@ RFRadio::RFRadio(){
     // set the pulseDetectedRecently to true
     pthread_t pulseMonitoringThread;
     ret = pthread_create(&pulseMonitoringThread, NULL, 
-                           playSongFunction, (void *) this);
+                           RFRadio::monitorForPulses, (void *) this);
     if ( ret < 0 ){
         throw new Error("Pulse monitoring thread failed to get created");
     }
