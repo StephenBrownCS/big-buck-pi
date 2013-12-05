@@ -29,7 +29,7 @@ BIG_BUCK_NODE_OBJECTS = Packet.o UDPPacket.o BigBuckPacket.o SendingSocket.o Lis
 all: $(SENDER_OBJECTS) $(RECEIVER_OBJECTS) $(BIG_BUCK_NODE_OBJECTS)
 	g++ $(CFLAGS) $(SENDER_OBJECTS) -o sender
 	g++ $(CFLAGS) $(RECEIVER_OBJECTS) -o receiver
-	g++ $(CFLAGS) $(BIG_BUCK_NODE_OBJECTS) gnublin.a -o big-buck-node
+	g++ $(CFLAGS) $(BIG_BUCK_NODE_OBJECTS) gnublin.a -o big-buck-node -lpthread
 
 TestSender.o: TestSender.cpp SendingSocket.h ListeningSocket.h Utility.h \
 		Packet.h BigBuckPacket.h UDPPacket.h \
