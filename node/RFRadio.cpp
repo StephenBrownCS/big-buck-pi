@@ -1,12 +1,16 @@
 #include <pthread.h>
-#include <threads.h>
+#include <chrono>
+#include <thread>
 #include "RFRadio.h"
 
 #define BOARD RASPBERRY_PI
 #include "gnublin.h"
 #include "Utility.h"
 
-const int PULSE_SAMPLING_INTERVAL_IN_SECONDS = 1;
+const int PULSE_SAMPLING_INTERVAL = 1000;
+
+using std::this_thread::sleep_for;
+using std::chrono::milliseconds;
 
 RFRadio* RFRadio::create(){
     return new RFRadio();
@@ -69,7 +73,7 @@ bool RFRadio::pulseDetected(){
 void RFRadio::monitorForPulses(RFRadio* radio){
     while( true ){
         // TODO
-        thread_sleep( PULSE_SAMPLING_INTERVAL_IN_SECONDS );
+        sleep_for(milliseconds( PULSE_SAMPLING_INTERVAL ));
     }
 }
 
