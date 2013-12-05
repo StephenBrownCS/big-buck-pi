@@ -7,7 +7,7 @@ class gnublin_gpio;
 class RFRadio{
 public:
     static RFRadio* create();
-    ~RFRadio;
+    ~RFRadio();
     void sendPulse();
     bool pulseDetected();
 private:
