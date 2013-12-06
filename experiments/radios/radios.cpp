@@ -33,11 +33,11 @@ int main()
                    
     while( 1 ){
         // cout << "Writing 1" << endl;
-        //ret = gpio.digitalWrite( RADIO_OUTPUT, 1 );
+        ret = gpio.digitalWrite( RADIO_OUTPUT, 1 );
         if ( ret < 0 ){
             cout << "Digital Write failure" << endl;
         }
-        sleep_for(milliseconds(1000000000));
+        //sleep_for(milliseconds(1000000000));
      }
      while ( true ){
            sleep_for(milliseconds(10000));
