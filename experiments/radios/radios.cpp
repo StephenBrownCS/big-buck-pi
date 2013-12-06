@@ -23,17 +23,25 @@ int main()
     cout<<"Waiting to settle"<<endl;
     
     pthread_t pulseMonitoringThread;
-    ret = pthread_create(&pulseMonitoringThread, NULL, 
+    int ret = pthread_create(&pulseMonitoringThread, NULL, 
                            monitorReceiving, (void *) &gpio);
-                           
+
+    if ( ret < 0 ){
+        cout << "pthread failed" << endl;
+    }        
+
+                   
     while( 1 ){
-        cout << "Writing 1" << endl;
-        int ret = gpio.digitalWrite( RADIO_OUTPUT, 1 );
+        // cout << "Writing 1" << endl;
+        ret = gpio.digitalWrite( RADIO_OUTPUT, 1 );
         if ( ret < 0 ){
             cout << "Digital Write failure" << endl;
         }
-        sleep_for(milliseconds(10));
-    }
+        //sleep_for(milliseconds(1000000000));
+     }
+     while ( true ){
+           sleep_for(milliseconds(10000));
+     }
 }
 
 void* monitorReceiving(void* foo){
@@ -42,18 +50,31 @@ void* monitorReceiving(void* foo){
     int previousState = 0;
     int currentState = 0;
 
+    int numOnes = 0;
+    int numZeroes = 0;
+
     while( 1 ){
         currentState = gpio->digitalRead( RADIO_INPUT );
-        if( currentState == 1 && previousState == 0){
-            cout<<"Motion!"<<endl;
+        cout << currentState << " " << numOnes << ", " << numZeroes << endl;
+
+        if ( currentState == 1){
+                numOnes++;
         }
-        else if ( currentState == 0 && previousState == 1){
-            cout<<"None!"<<endl;
+        else if (currentState == 0){
+             numZeroes++;
         }
-        else{
+
+        //if( currentState == 1 && previousState == 0){
+        //    cout<<"Motion!"<<endl;
+        //}
+        //else if ( currentState == 0 && previousState == 1){
+        //    cout<<"None!"<<endl;
+        //}
+        
+        if( currentState < 0 ){
             cout << "Digital Read failure" << endl;
         }
-	    previousState = currentState;
+	previousState = currentState;
         sleep_for(milliseconds(100));
     }
 }
