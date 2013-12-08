@@ -1,8 +1,8 @@
 #include <iostream>
 #include <cstring>
 #include <sstream>
-#include <chrono>
-#include <thread>
+#include <chrono> // for milliseconds()
+#include <thread> // for sleep_for()
 #include <cstdlib> // for system()
 #include "BigBuckSensingNode.h"
 #include "BigBuckPacket.h"
@@ -26,7 +26,9 @@ const int POLLING_RATE = 100; //milliseconds
 const int TIME_TO_WAIT_AFTER_WIFI_POWERUP = 1000 * 60; // 1 minute
 const int HELLO_PACKET_TIMEOUT_IN_MILLISECONDS = 15000; // 15 seconds
 const int WIFI_RADIO_POWERDOWN_TIMEOUT_IN_MILLISECONDS = 60000 * 5; // 5 minutes
-
+const int MILLISECONDS_TO_WAIT_AFTER_IFCONFIG_FAILURE = 5 * 1000; // 5 seconds
+const int NUM_TRIES_TO_TURN_ON_WIFI = 10;
+const int NUM_TRIES_TO_TURN_OFF_WIFI = 10;
 
 BigBuckSensingNode* BigBuckSensingNode::create( Logger& logger_, Communicator* communicator_, Sensor* sensor_, short id_ ){
     return new BigBuckSensingNode( logger_, communicator_, sensor_, id_ );
@@ -110,7 +112,8 @@ void BigBuckSensingNode::sendSensorState( int currentState ){
     }
 
     if ( ! wifiRadioIsOn ){
-        // turn on wifi radio and wait 1 minute
+        // turn on wifi radio and wait, because it might take a while to 
+        // actually turn on
         turnWifiRadioOn();
         sleep_for(milliseconds( TIME_TO_WAIT_AFTER_WIFI_POWERUP ));
     }
@@ -146,39 +149,84 @@ void BigBuckSensingNode::handleReceivedPacket(UDPPacket* udpPkt){
 }
 
 void BigBuckSensingNode::turnWifiRadioOn(){
-    system("ifconfig wlan0 up");
+    // To make this work, we need to supply 3 system commands
+    // turn on wifi driver, turn off wlan0 to reset it, turn on wlan0
+    // We found that simply turning on the wifi driver is insufficient
     
+    // STEP ONE: TURN ON WIFI DRIVER
+    // This step is usally the most troublesome, and tends to need more tries 
+    // than the others, which almost never fail
     bool wifiInterfaceIsUp = false;
     int ret = 0;
+    int numTries = 0;
     while ( ! wifiInterfaceIsUp ){
-        cout << "ifup wlan0" << endl;
+        logger << "ifup wlan0";
         ret = system("ifup wlan0");
-        cout << "... returned " << ret << endl;
-        wifiInterfaceIsUp = ret == 0;
-        if ( !wifiInterfaceIsUp )
-            sleep_for(milliseconds( 5 * 1000 ));
+        logger << "... returned " << ret;
+        wifiInterfaceIsUp = ret >= 0;
+        if ( !wifiInterfaceIsUp ){
+            sleep_for(milliseconds( MILLISECONDS_TO_WAIT_AFTER_IFCONFIG_FAILURE ));
+        }
+        
+        numTries++;
+        if ( numTries > NUM_TRIES_TO_TURN_ON_WIFI){
+            throw Error("Unable to turn on wifi driver using ifup");
+        }
     }
 
-    // sleep_for(milliseconds(10 * 1000));
+    // STEP TWO: TURN OFF WLAN0 INTERFACE TO RESET IT
+    numTries = 0;
+    ret = -1;
+    while (ret < 0){
+        logger << "ifconfig wlan0 down";
+        ret = system("ifconfig wlan0 down");
+        logger << "... returned " << ret;
+        if ( ret < 0 ){
+            sleep_for(milliseconds( MILLISECONDS_TO_WAIT_AFTER_IFCONFIG_FAILURE ));
+        }
+        numTries++;
+        if ( numTries > NUM_TRIES_TO_TURN_ON_WIFI){
+            throw Error("Unable to reset wlan0 using ifconfig wlan0 down");
+        }
+    }
 
-    cout << "ifconfig wlan0 down" << endl;
-    ret = system("ifconfig wlan0 down");
-    
-    // sleep_for(milliseconds(5 * 1000));
-    cout << "... returned " << ret << endl;
-    cout << "ifconfig wlan0 up" << endl;
-    ret = system("ifconfig wlan0 up");
-    cout << "... returned " << ret << endl;
-    
+    // STEP THREE: TURN ON WLAN0 INTERFACE
+    numTries = 0;
+    ret = -1;
+    while ( ret < 0){
+        logger << "ifconfig wlan0 up";
+        ret = system("ifconfig wlan0 up");
+        logger << "... returned " << ret;
+        if ( ret < 0 ){
+            sleep_for(milliseconds( MILLISECONDS_TO_WAIT_AFTER_IFCONFIG_FAILURE0 ));
+        }
+        numTries++;
+        if ( numTries > NUM_TRIES_TO_TURN_ON_WIFI){
+            throw Error("Unable to enable wlan0 using ifconfig wlan0 up");
+        }
+    }
     
     wifiRadioIsOn = true;
 }
 
 void BigBuckSensingNode::turnWifiRadioOff(){
-    system("ifconfig wlan0 down");
+    // Can do this all with one system command - using ifdown, which turns off 
+    // the wifi driver
+    int ret = -1;
+    int numTries = 0;
+    while ( ret < 0 ){
+        ret = system("ifdown wlan0");
+        if ( ret < 0 ){
+            logger << "turn off failed";
+            sleep_for(milliseconds( 5 * 1000 ));
+        } 
+        
+        numTries++;
+        if ( numTries > NUM_TRIES_TO_TURN_OFF_WIFI){
+            throw Error("Unable to turn off wlan0 using ifdown");
+        }
+    }
+    logger << "Successfully shut down wifi";
+
     wifiRadioIsOn = false;
-    
-    
-    
-    
 }
