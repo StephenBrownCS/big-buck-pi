@@ -1,5 +1,6 @@
 #define BOARD RASPBERRY_PI
 #include "gnublin.h"
+#include "Timer.h"
 #include <iostream>
 #include <chrono>
 #include <thread>
@@ -19,6 +20,9 @@ int main()
 
     cout<<"Sending RF Signals"<<endl;
 
+    Timer flipTimer;
+    flipTimer.startCountdown( 1000 * 5 );
+
     int ret = 0;               
     int stateToWrite = 0;  
     while( 1 ){
@@ -26,10 +30,13 @@ int main()
         if ( ret < 0 ){
             cout << "Digital Write failure" << endl;
         }
-        sleep_for(milliseconds(1000 * 10));
+        //sleep_for(milliseconds(1000 * 10));
         
-        stateToWrite = stateToWrite ? 0 : 1;
-        cout << "Toggling to " << stateToWrite << endl;
+        if ( flipTimer.hasExpired() ){
+            stateToWrite = stateToWrite ? 0 : 1;
+            cout << "Toggling to " << stateToWrite << endl;
+            flipTimer.startCountdown( 1000 * 5 );
+        }
      }
      while ( true ){
            sleep_for(milliseconds(10000));
