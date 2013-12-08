@@ -13,6 +13,7 @@ using namespace std;
 
 const int OWN_LISTEN_PORT = 9999;
 const char* NAME_SERVER_NAME = "cedar.cs.wisc.edu";
+const char* NAME_SERVER_HOTSPOT_STATIC_IP = "10.0.0.2";
 
 //#include <chrono>
 //#include <thread>
@@ -29,7 +30,11 @@ int main(){
        cout << "self: " << self << endl;
     
         // Register with the name server
+        #ifdef USING_CEDAR
         unsigned long nameServerIp = getIPAddressForHostname(NAME_SERVER_NAME);
+        #else
+        unsigned long nameServerIp = ntohl(ipAddressStrToLong( NAME_SERVER_HOTSPOT_STATIC_IP ));
+        #endif
         unsigned short nameServerPort = NAME_SERVER_PORT;
     
         HostAndPort nameServerHap(nameServerIp, nameServerPort);
