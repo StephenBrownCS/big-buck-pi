@@ -29,14 +29,19 @@ public:
     static WifiCommunicator* create( const char* baseIPAddress_, const int basePort_, const int ownPort_ );
     ~WifiCommunicator();
     
+    // Sends packet directly to the master node
     void sendPacket( Packet* pkt );
+    
     bool isPacketWaiting();
     Packet* receivePacket();
 
 private:
     WifiCommunicator( const char* baseIPAddress_, const int basePort_, const int ownPort_ );
 
+    // Socket for sending directly to the master
     SendingSocket* sendSock;
+    
+    // Socket for receiving at our own port
     ListeningSocket* listenSock;
     HostAndPort ownHap;
     HostAndPort baseHap;
