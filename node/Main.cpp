@@ -43,7 +43,10 @@ using std::chrono::milliseconds;
 
 const int OWN_LISTEN_PORT = 8888;
 const char* NAME_SERVER_NAME = "cedar.cs.wisc.edu";
-const char* NAME_SERVER_HOTSPOT_STATIC_IP = "10.0.0.2";
+
+// The hotspot bounces around between two static IP's
+const char* NAME_SERVER_HOTSPOT_STATIC_IP_1 = "10.0.0.2";
+const char* NAME_SERVER_HOTSPOT_STATIC_IP_2 = "10.0.0.9";
 
 unsigned short registerWithNameServer(HostAndPort & self, HostAndPort & masterHap, Logger & logger, HostAndPort & nameServerHap, unsigned long nameServerIp, unsigned short nameServerPort);
 unsigned long getNameServerIP();
@@ -183,11 +186,14 @@ unsigned long getNameServerIP(){
     static int counter = 0;
     counter++;
 
-    if( counter % 2 == 0 ){
+    if( counter % 3 == 0 ){
         return getIPAddressForHostname(NAME_SERVER_NAME);
     }
+    else if (counter % 3 == 1){
+        return ntohl(ipAddressStrToLong( NAME_SERVER_HOTSPOT_STATIC_IP_1 ));
+    }
     else{
-        return ntohl(ipAddressStrToLong( NAME_SERVER_HOTSPOT_STATIC_IP ));
+        return ntohl(ipAddressStrToLong( NAME_SERVER_HOTSPOT_STATIC_IP_2 ));
     }
 }
 
