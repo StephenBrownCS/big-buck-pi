@@ -198,7 +198,7 @@ void BigBuckSensingNode::turnWifiRadioOn(){
         ret = system("ifconfig wlan0 up");
         logger << "... returned " << ret;
         if ( ret < 0 ){
-            sleep_for(milliseconds( MILLISECONDS_TO_WAIT_AFTER_IFCONFIG_FAILURE0 ));
+            sleep_for(milliseconds( MILLISECONDS_TO_WAIT_AFTER_IFCONFIG_FAILURE ));
         }
         numTries++;
         if ( numTries > NUM_TRIES_TO_TURN_ON_WIFI){
