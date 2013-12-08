@@ -15,6 +15,7 @@
 #include "RFRadio.h"
 
 #define USING_RADIOS
+//#define RUNNING_HOTSPOT
 
 using namespace std;
 
@@ -213,6 +214,18 @@ void BigBuckSensingNode::turnWifiRadioOn(){
             throw Error("Unable to enable wlan0 using ifconfig wlan0 up");
         }
     }
+
+    #ifdef RUNNING_HOTSPOT
+    ret = system("dhcpd wlan0");
+    if ( ret < 0 ){
+         throw Error("Could not start dhcpd");
+    }
+
+    ret = system("hostapd /home/pi/hostap.conf");
+    if ( ret < 0 ){
+        throw Error("Could not start hostapd");
+    }
+    #endif
     
     sleep_for(milliseconds( MILLISECONDS_TO_WAIT_AFTER_POWERING_UP_WIFI));
     wifiRadioIsOn = true;
@@ -221,7 +234,19 @@ void BigBuckSensingNode::turnWifiRadioOn(){
 void BigBuckSensingNode::turnWifiRadioOff(){
     // Can do this all with one system command - using ifdown, which turns off 
     // the wifi driver
-    int ret = -1;
+    int ret = 0;
+    #ifdef RUNNING_HOTSPOT
+    ret = system("pkill dhcpd");
+    if ( ret < 0 ){
+        throw Error("killing dhcpd failed");
+    }
+    ret = system("pkill hostapd");
+    if ( ret < 0 ){
+        throw Error("killing hostapd failed");
+    }
+    #endif
+
+    ret = -1;
     int numTries = 0;
     while ( ret < 0 ){
         ret = system("ifdown wlan0");
