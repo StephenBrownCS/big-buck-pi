@@ -7,6 +7,8 @@ using std::this_thread::sleep_for;
 using std::chrono::milliseconds;
 using namespace std;
 
+const int NUM_TRIES_TO_TURN_OFF_WIFI = 10;
+
 int main(){
 
     // Can do this all with one system command - using ifdown, which turns off 
@@ -22,7 +24,8 @@ int main(){
         
         numTries++;
         if ( numTries > NUM_TRIES_TO_TURN_OFF_WIFI){
-            throw Error("Unable to turn off wlan0 using ifdown");
+            cout << ("Unable to turn off wlan0 using ifdown") << endl;
+	    exit(-1);
         }
     }
     cout << "Successfully shut down wifi" << endl;

@@ -7,6 +7,9 @@ using std::this_thread::sleep_for;
 using std::chrono::milliseconds;
 using namespace std;
 
+const int MILLISECONDS_TO_WAIT_AFTER_IFCONFIG_FAILURE = 5 * 1000;
+const int NUM_TRIES_TO_TURN_ON_WIFI = 10;
+
 int main(){
     bool wifiInterfaceIsUp = false;
     int ret = 0;
@@ -22,7 +25,7 @@ int main(){
         
         numTries++;
         if ( numTries > NUM_TRIES_TO_TURN_ON_WIFI){
-            throw Error("Unable to turn on wifi driver using ifup");
+            cout << "Unable to turn on wifi driver using ifup" << endl;
         }
     }
 
@@ -38,7 +41,7 @@ int main(){
         }
         numTries++;
         if ( numTries > NUM_TRIES_TO_TURN_ON_WIFI){
-            throw Error("Unable to reset wlan0 using ifconfig wlan0 down");
+            cout << ("Unable to reset wlan0 using ifconfig wlan0 down") << endl;
         }
     }
 
@@ -50,11 +53,11 @@ int main(){
         ret = system("ifconfig wlan0 up");
         cout << "... returned " << ret << endl;
         if ( ret < 0 ){
-            sleep_for(milliseconds( MILLISECONDS_TO_WAIT_AFTER_IFCONFIG_FAILURE0 ));
+            sleep_for(milliseconds( MILLISECONDS_TO_WAIT_AFTER_IFCONFIG_FAILURE ));
         }
         numTries++;
         if ( numTries > NUM_TRIES_TO_TURN_ON_WIFI){
-            throw Error("Unable to enable wlan0 using ifconfig wlan0 up");
+            cout << "Unable to enable wlan0 using ifconfig wlan0 up" << endl;
         }
     }
 
