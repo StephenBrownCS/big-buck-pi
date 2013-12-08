@@ -23,9 +23,10 @@ using std::chrono::milliseconds;
 
 const int BASE_STATION_ID = 7777;
 const int POLLING_RATE = 100; //milliseconds
-const int TIME_TO_WAIT_AFTER_WIFI_POWERUP = 1000 * 60; // 1 minute
+const int MILLISECONDS_TO_WAIT_AFTER_POWERING_UP_WIFI = 1000 * 60; // 1 minute
 const int HELLO_PACKET_TIMEOUT_IN_MILLISECONDS = 15000; // 15 seconds
-const int WIFI_RADIO_POWERDOWN_TIMEOUT_IN_MILLISECONDS = 60000 * 5; // 5 minutes
+const int WIFI_RADIO_POWERDOWN_TIMEOUT_IN_MILLISECONDS = 60000 * 1; // 1 minute
+const int WIFI_RADIO_POWERUP_TIMEOUT_IN_MILLISECONDS = 60000 * 5; //5 minutes
 const int MILLISECONDS_TO_WAIT_AFTER_IFCONFIG_FAILURE = 5 * 1000; // 5 seconds
 const int NUM_TRIES_TO_TURN_ON_WIFI = 10;
 const int NUM_TRIES_TO_TURN_OFF_WIFI = 10;
@@ -58,6 +59,7 @@ void BigBuckSensingNode::sensingLoop(){
     helloPacketTimeoutTimer.startCountdown( HELLO_PACKET_TIMEOUT_IN_MILLISECONDS );
     Timer wifiRadioPowerDownTimer;
     wifiRadioPowerDownTimer.startCountdown( WIFI_RADIO_POWERDOWN_TIMEOUT_IN_MILLISECONDS );
+    Timer wifiRadioPowerUpTimer;
     while( true ){
         if (communicator->isPacketWaiting()){
             logger << "Packet Received!";
@@ -94,9 +96,15 @@ void BigBuckSensingNode::sensingLoop(){
         
         // if no activity in the last minute or so, power down the Wifi radio
         #ifdef USING_RADIOS
-        if (wifiRadioPowerDownTimer.hasExpired()){
+        if (wifiRadioIsOn && wifiRadioPowerDownTimer.hasExpired()){
             logger << "Wifi Powerdown timer has expired, powering down wifi.";
             turnWifiRadioOff();
+            wifiRadioPowerUpTimer.startCountdown( WIFI_RADIO_POWERUP_TIMEOUT_IN_MILLISECONDS  );
+        }
+
+        if (! wifiRadioIsOn && wifiRadioPowerUpTimer.hasExpired()){
+            turnWifiRadioOn();
+            wifiRadioPowerDownTimer.startCountdown( WIFI_RADIO_POWERDOWN_TIMEOUT_IN_MILLISECONDS  );
         }
         #endif
         
@@ -104,6 +112,7 @@ void BigBuckSensingNode::sensingLoop(){
         sleep_for(milliseconds( POLLING_RATE ));
     }
 }
+
 
 void BigBuckSensingNode::sendSensorState( int currentState ){
 
@@ -115,7 +124,6 @@ void BigBuckSensingNode::sendSensorState( int currentState ){
         // turn on wifi radio and wait, because it might take a while to 
         // actually turn on
         turnWifiRadioOn();
-        sleep_for(milliseconds( TIME_TO_WAIT_AFTER_WIFI_POWERUP ));
     }
     
     ostringstream convert;
@@ -206,6 +214,7 @@ void BigBuckSensingNode::turnWifiRadioOn(){
         }
     }
     
+    sleep_for(milliseconds( MILLISECONDS_TO_WAIT_AFTER_POWERING_UP_WIFI));
     wifiRadioIsOn = true;
 }
 
