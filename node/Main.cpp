@@ -48,6 +48,8 @@ const char* NAME_SERVER_NAME = "cedar.cs.wisc.edu";
 const char* NAME_SERVER_HOTSPOT_STATIC_IP_1 = "10.0.0.2";
 const char* NAME_SERVER_HOTSPOT_STATIC_IP_2 = "10.0.0.9";
 
+const int MILLISECONDS_TO_WAIT_AFTER_ERROR_HANDLING = 3000;
+
 unsigned short registerWithNameServer(HostAndPort & self, HostAndPort & masterHap, Logger & logger, HostAndPort & nameServerHap, unsigned long nameServerIp, unsigned short nameServerPort);
 unsigned long getNameServerIP();
 
@@ -120,7 +122,7 @@ int main(int argc, char** argv){
             logger << "Caught MasterResetException";
         }
     
-        sleep_for(milliseconds( 10000 ));
+        sleep_for(milliseconds( MILLISECONDS_TO_WAIT_AFTER_ERROR_HANDLING ));
         logger << "Retrying" << "\n";
     }
     return 0;
