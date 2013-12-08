@@ -18,7 +18,8 @@ int main()
     gpio.pinMode( RADIO_OUTPUT, OUTPUT);
 
     cout<<"Sending RF Signals"<<endl;
-               
+
+    int ret = 0;               
     int stateToWrite = 0;  
     while( 1 ){
         ret = gpio.digitalWrite( RADIO_OUTPUT, stateToWrite );

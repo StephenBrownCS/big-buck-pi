@@ -38,7 +38,7 @@ void* monitorReceiving(void* foo){
     int consecutiveZeroes = 0;
 
     while( 1 ){
-        currentState = gpio->analogRead( RADIO_INPUT );
+        currentState = gpio->digitalRead( RADIO_INPUT );
         if( currentState < 0 ){
             cout << "Digital Read failure" << endl;
         }
@@ -64,26 +64,26 @@ void* monitorReceivingWithBuffer(void* foo){
     int previousState = 0;
     int currentState = 0;
 
-    int BUFFER_SIZE = 100;
-    bool historyBuffer[BUFFER_SIZE];
-    for(int i = 0; i < BUFFER_SIZE; i++){
+    int HISTORY_BUFFER_SIZE = 100;
+    bool historyBuffer[HISTORY_BUFFER_SIZE];
+    for(int i = 0; i < HISTORY_BUFFER_SIZE; i++){
         historyBuffer[i] = 0;
     }
     int nextSpot = 0;
 
     while( 1 ){
-        currentState = gpio->analogRead( RADIO_INPUT );
+        currentState = gpio->digitalRead( RADIO_INPUT );
         if( currentState < 0 ){
             cout << "Digital Read failure" << endl;
         }
         else{
             // cout << currentState << endl;
             historyBuffer[nextSpot] = currentState;
-            nextSpot = (nextSpot + 1) % BUFFER_SIZE;
+            nextSpot = (nextSpot + 1) % HISTORY_BUFFER_SIZE;
         }
         
         int numZeroes = 0;
-        for(int i = 0; i < BUFFER_SIZE; i++){
+        for(int i = 0; i < HISTORY_BUFFER_SIZE; i++){
             if ( historyBuffer[i] ){
                 numZeroes++;
             }
