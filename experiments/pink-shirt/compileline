@@ -1,1 +1,1 @@
-g++ -std=c++0x radios.cpp gnublin.a -I../../lib/gnublin-api
+g++ -std=c++0x RadioSender.cpp -lwiringPi -I../../lib/wiringPi
