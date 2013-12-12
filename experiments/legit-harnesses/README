@@ -1,0 +1,7 @@
+TestHarness1 - prints out 10 analog readings from pin 23
+TestHarness2 - tries to detect a long sequence of 5V's (that would only 
+be possible in the case of a 1's being received from the radio). Prints "PULSE
+DETECTED" as it finds it.
+TestHarness3 - tries to detect a zero (a.k.a. Seaton Backup Plan Alpha 11)
+TestHarness4 - experiment for determining hte current rate, it samples 40 times per second for a full second, and prints out the number of transitions it sees in that second. A transition is defined to be a change in voltage.
+
