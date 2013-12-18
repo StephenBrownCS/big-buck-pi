@@ -1,5 +1,6 @@
 /*
-    1) Listens on port 8888
+    1) Listens on port 8888 - may need to be changed if you want to run a 
+        SensingNode program on the same pi (it also uses this port)
     2) Expects to receive a UDP Packet with no payload (this will identify the 
         sender)
 */
@@ -41,16 +42,6 @@ int main(int argc, char** argv){
         try{    
             const char* destIpAddress = 0;
             unsigned short destPort = 0;
-            /*
-            if ( argc != 3 ){
-                cout << "Usage: Main <Dot-Separated IP Address> <port>" << endl;
-                exit( 0 );
-            }
-            else{
-                destIpAddress = argv[1];
-                destPort = atoi(argv[2]);
-            }
-            */
     
             // This is kind of hacky - but we identify if we're a dns-finable host (such as 
             // cedar.cs.wisc.edu) by asking getOwnHostName(). Otherwise, fall back to 
@@ -184,6 +175,10 @@ int main(int argc, char** argv){
     return 0;
 }
 
+/*
+    Sends the Master connection information to the node with the designated nodeId
+    The packet includes our own hap, the dest hap, and the master's hap
+*/
 void sendMasterHapToNode( HostAndPort & self, HostAndPort & destHap, HostAndPort & masterHap, unsigned short nodeId){
     
     SendingSocket sock(htonl(destHap.getIP()), destHap.getPort());
@@ -200,6 +195,11 @@ void sendMasterHapToNode( HostAndPort & self, HostAndPort & destHap, HostAndPort
     sock.sendPacket(responseOuterPkt); 
 }
 
+/*
+    Given a hap, get the assigned node id. If this id is a repeat, return 
+    the already-assigned id. Otherwise, if it's a new one, assign ita new one, 
+    and incremente the counter for id's to assign
+*/
 int acquireNodeId( unsigned short & nextNodeIdToAssign, 
     map<HostAndPort, unsigned short> & sensorNodes, 
     const HostAndPort & hap )

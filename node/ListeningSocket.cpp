@@ -1,9 +1,7 @@
 /**
  * Creates a socket for listening based off of a given port.
  *
- * <p>Bugs: none known
- *
- * @author Stephen Brown and Brian Hunter
+ * @author Stephen Brown
  */
 
 #include <strings.h>

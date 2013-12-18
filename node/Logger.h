@@ -1,4 +1,7 @@
-
+/*
+    A logging module for simultaneously printing to standard out and to an 
+    output log file.
+*/
 #ifndef LOGGER_H_
 #define LOGGER_H_
 

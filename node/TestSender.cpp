@@ -2,7 +2,14 @@
 #include <sstream>
 #include <arpa/inet.h>
 #include "ListeningSocket.h"
+/*
+    A program which poses as a sensing node - used for testing the name server.
+*/
+
+
 #include "SendingSocket.h"
+
+
 #include "Packet.h"
 #include "UDPPacket.h"
 #include "BigBuckPacket.h"

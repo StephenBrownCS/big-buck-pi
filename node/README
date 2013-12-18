@@ -1,0 +1,56 @@
+The Node Folder
+This folder contains all of the C++ applications used for running on the 
+Raspberry Pis - this includes
+    big-buck-node - the program which senses motion and sends off the network packets
+    name-server - this program hosts a name server which is used to help the 
+    sensing nodes find master tablet.
+    various test programs
+    
+Big Buck Node
+    Entry point for this program is Main.cpp. It creates a composite BigBuckSensingNode
+    object, which has all the structure for sensing things and sending information.
+    The BigBuckSensingNode has a bunch of plug-and-play components - you can plug 
+    in different communicators (specifying if you want to send packets over wifi
+    or over radios, currently only wifi is supported). You can also plug in different 
+    sensors, although currently PIRSensor is the only one we have. 
+    
+    For sockets the Big Buck Node uses Berkely sockets running on UDP. Sockets 
+    are abstracted as ListeningSocket and SendingSocket.
+    
+    The packets, we have two layers- the BigBuckPacket, which represents 
+    applicaiton-level packets with application-level info, and the UDPPacket 
+    (which in hindsight, should have been called WifiPacket). Whenever we send things
+    from the Big Buck Node, we create a BigBuckPacket and hand it off the the communicator,
+    which then figures out where to send it to. Since we're using a WifiCommunicator,
+    it will encapsulate that BigBuckPacket in a UDPPacket and send it off. See the 
+    respective classes for BigBuckPacket and UDPPacket for a breakdown on the different
+    fields.
+    
+    Communicating with the RFRadio is also in the mix - it is abstracted away as 
+    an RFRadio module.
+    
+    For communicating with the actual Raspberry Pi GPIO pins, we use the gnublin
+    C++ library. We also tried the WiringPi library, which also works, and is included
+    in our experiments folder. Communicating with the pins is fairly straightforward: 
+    see the PIRSensor or RFRadio modules.
+                
+Name Server
+    The Name server simply opens up a ListeningSocket and waits around for 
+    BigBuckPackets from different senders. The protocol works as follows:
+        Sensing nodes send registration packets
+            Name server responds with node id assignment
+        Master tablet sends master registration packet
+            Name server responds with ack, and sends the master IP address and 
+            port to all nodes which have registered
+        Any sensing nodes which connect after this will be immediately given the 
+            Master's contact information.
+        From there, the nodes will send their sensor data to the master directly,
+            and not through the name server.
+            
+    The name server was designed to be run either on a pi, or on a normal workstation.
+    We had some difficulties in pinning down the name server's static ip. We were 
+    running the name server on a pi which was also running the hotspot, and its
+    IP address's last part would bounce between .2 and .9.
+    
+
+    

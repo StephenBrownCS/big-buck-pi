@@ -2,8 +2,6 @@
  * Creates the BigBuckPacket as an object based off of a given type, sequence,
  * length, and payload.
  *
- * <p>Bugs: none known
- *
  * @author Stephen Brown
  */
 

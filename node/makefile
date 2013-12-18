@@ -4,19 +4,16 @@ LDFLAGS = -I../lib/gnublin-api
 
 SENDER_OBJECTS = Packet.o UDPPacket.o BigBuckPacket.o SendingSocket.o ListeningSocket.o \
                    Utility.o\
-                   LinkStatePacket.o \
                    HostAndPort.o Timer.o \
                    PacketConstants.o \
                    TestSender.o Logger.o
 RECEIVER_OBJECTS = Packet.o UDPPacket.o BigBuckPacket.o SendingSocket.o ListeningSocket.o \
                    Utility.o \
-                   LinkStatePacket.o \
                    HostAndPort.o Timer.o \
                    TestReceiver.o \
                    PacketConstants.o Logger.o
 BIG_BUCK_NODE_OBJECTS = Packet.o UDPPacket.o BigBuckPacket.o SendingSocket.o ListeningSocket.o \
                    Utility.o PacketConstants.o \
-                   LinkStatePacket.o \
                    HostAndPort.o Timer.o \
                    PIRSensor.o WifiCommunicator.o BigBuckSensingNode.o \
                    Main.o Logger.o RFRadio.o
@@ -67,9 +64,6 @@ BigBuckPacket.o: BigBuckPacket.h BigBuckPacket.cpp BigBuckPacket.h
 
 PacketConstants.o: PacketConstants.h PacketConstants.cpp
 	g++ $(CFLAGS) PacketConstants.cpp -c
-
-LinkStatePacket.o: Packet.h LinkStatePacket.cpp LinkStatePacket.h HostAndPort.h
-	g++ $(CFLAGS) LinkStatePacket.cpp -c
 	
 HelloPacket.o: Packet.h HelloPacket.cpp HelloPacket.h HostAndPort.h
 	g++ $(CFLAGS) HelloPacket.cpp -c
@@ -87,12 +81,7 @@ ListeningSocket.o: ListeningSocket.h ListeningSocket.cpp Packet.h
 	g++ $(CFLAGS) ListeningSocket.cpp -c
 	
 Logger.o: Logger.h Logger.cpp
-	g++ $(CFLAGS) Logger.cpp -c
-	
-PacketFactory.o: PacketFactory.h PacketFactory.cpp \
-						LinkStatePacket.h Utility.h \
-						HelloPacket.h
-	g++ $(CFLAGS) PacketFactory.cpp -c
+	g++ $(CFLAGS) Logger.cpp -c	
 	
 Timer.o: Timer.h Timer.cpp Utility.h
 	g++ $(CFLAGS) Timer.cpp -c

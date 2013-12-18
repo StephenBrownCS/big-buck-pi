@@ -14,7 +14,11 @@
 #include "Timer.h"
 #include "RFRadio.h"
 
-#define USING_RADIOS
+#define USING_POWER_SAVING_MODE
+
+// Enable this if running the hotspot - we have to shut down and turn on more 
+// daemons during power saving mode - we weren't able to quite get this to 
+// work reliably, however.
 //#define RUNNING_HOTSPOT
 
 using namespace std;
@@ -96,7 +100,7 @@ void BigBuckSensingNode::sensingLoop(){
         }
         
         // if no activity in the last minute or so, power down the Wifi radio
-        #ifdef USING_RADIOS
+        #ifdef USING_POWER_SAVING_MODE
         if (wifiRadioIsOn && wifiRadioPowerDownTimer.hasExpired()){
             logger << "Wifi Powerdown timer has expired, powering down wifi.";
             turnWifiRadioOff();

@@ -1,6 +1,12 @@
 #include <iostream>
 #include <arpa/inet.h>
+/*
+    A program for posing as a master tablet - used for testing the nodes and 
+    name server.
+*/
 #include "ListeningSocket.h"
+
+
 #include "SendingSocket.h"
 #include "Packet.h"
 #include "UDPPacket.h"
