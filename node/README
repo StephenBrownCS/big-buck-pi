@@ -6,6 +6,11 @@ Raspberry Pis - this includes
     sensing nodes find master tablet.
     various test programs
     
+    To create the big-buck-node, type "make"
+    To create the name server, type "make name-server"
+    To create a fake node to run on a laptop, type "make test-sender"
+    To create a fake master tablet to run on a laptop, type "make test-receiver"
+    
 Big Buck Node
     Entry point for this program is Main.cpp. It creates a composite BigBuckSensingNode
     object, which has all the structure for sensing things and sending information.
